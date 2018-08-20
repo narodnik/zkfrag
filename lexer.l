@@ -1,0 +1,43 @@
+%{
+#include <cstdio>
+
+#include "parser.hpp"
+
+extern "C" int yylex();
+
+%}
+
+%option outfile="generated/lexer.cpp" header-file="generated/lexer.hpp"
+
+%%
+[ \t\n]         ;
+,               { return COMMA; }
+:               { return COLON; }
+\<=              { return LESS_EQ; }
+\>=              { return GREATER_EQ; }
+\<               { return LESS; }
+\>               { return GREATER; }
+=               { return EQUAL; }
+\*              { return MULTIPLY; }
+\+              { return PLUS; }
+private         { return PRIVATE; }
+prove           { return PROVE; }
+\(              { return L_BRACKET; }
+\)              { return R_BRACKET; }
+represent       { return REPRESENT; }
+linear_equation { return LINEAR_EQUATION; }
+range_proof     { return RANGE_PROOF; }
+any             { return ANY; }
+all             { return ALL; }
+version         { return VERSION; }
+\.              { return DOT; }
+[0-9]+          {
+    yylval.sval = strdup(yytext);
+    return INT;
+}
+[a-zA-Z]+[a-zA-Z0-9_]*  {
+    yylval.sval = strdup(yytext);
+    return TOKEN;
+}
+.               ;
+%%
