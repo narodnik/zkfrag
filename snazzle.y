@@ -18,7 +18,6 @@ void yyerror(const char *s);
 // use that union instead of "int" for the definition of "yystype":
 %union {
 	int ival;
-	float fval;
 	char *sval;
 }
 
@@ -26,7 +25,7 @@ void yyerror(const char *s);
 %token COMMA COLON EQUAL MULTIPLY PLUS PRIVATE PROVE
 %token LESS_EQ GREATER_EQ LESS GREATER
 %token L_BRACKET R_BRACKET REPRESENT LINEAR_EQUATION RANGE_PROOF ANY ALL
-%token VERSION
+%token VERSION DOT
 
 // Define the "terminal symbol" token types I'm going to use (in CAPS
 // by convention), and associate each with a field of the union:
@@ -40,8 +39,12 @@ snazzle:
 	header private prove { cout << "done with a snazzle file!" << endl; }
 	;
 header:
-	VERSION FLOAT { cout << "reading a snazzle file version " << $2 << endl; }
+	VERSION version_number
 	;
+version_number:
+    INT DOT INT { cout << "version: " << $1 << "." << $3 << endl; }
+    | INT DOT INT DOT INT
+    { cout << "version: " << $1 << "." << $3 << "." << $5 << endl; }
 
 private:
     PRIVATE COLON private_values
