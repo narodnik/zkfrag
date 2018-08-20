@@ -1,44 +1,44 @@
-#include "expression.hpp"
+#include "ast_node.hpp"
 
 namespace libdark {
 
-expression::expression(const std::string& value, const expression* parent)
+ast_node::ast_node(const std::string& value, const ast_node* parent)
   : type_(operation_type::value), value_(value),
     left_(nullptr), right_(nullptr)
 {
 }
 
-expression::expression(operation_type type,
-    expression* left, expression* right, const expression* parent
+ast_node::ast_node(operation_type type,
+    ast_node* left, ast_node* right, const ast_node* parent
 )
   : type_(type), left_(left), right_(right)
 {
 }
 
-expression::~expression()
+ast_node::~ast_node()
 {
     delete left_;
     delete right_;
 }
 
-const operation_type expression::type() const
+const operation_type ast_node::type() const
 {
     return type_;
 }
-const std::string& expression::value() const
+const std::string& ast_node::value() const
 {
     return value_;
 }
 
-const expression* expression::left() const
+const ast_node* ast_node::left() const
 {
     return left_;
 }
-const expression* expression::right() const
+const ast_node* ast_node::right() const
 {
     return right_;
 }
-const expression* expression::parent() const
+const ast_node* ast_node::parent() const
 {
     return parent_;
 }

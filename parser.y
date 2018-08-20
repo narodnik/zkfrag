@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-#include "../expression.hpp"
+#include "../ast_node.hpp"
 
 // Declare stuff from Flex that Bison needs to know about:
 extern "C" int yylex();
@@ -13,12 +13,12 @@ extern FILE *yyin;
 void yyerror(const char* s);
 %}
 
-// Include libdark::expression in the parser header
+// Include libdark::ast_node in the parser header
 %code requires {
 #ifndef EXPR_INCLUDE_HEADER
 #define EXPR_INCLUDE_HEADER
 
-#include "../expression.hpp"
+#include "../ast_node.hpp"
 
 #endif
 }
@@ -35,7 +35,7 @@ void yyerror(const char* s);
 %union {
 	int ival;
 	char *sval;
-    libdark::expression* expr;
+    libdark::ast_node* ast;
 }
 
 // define the constant-string tokens:
@@ -50,7 +50,7 @@ void yyerror(const char* s);
 %token <fval> FLOAT
 %token <sval> TOKEN
 
-%type <expr> root
+%type <ast> root
 
 %%
 
@@ -59,7 +59,7 @@ snazzle:
 	;
 root:
     {
-        $$ = new libdark::expression("root", nullptr);
+        $$ = new libdark::ast_node("root", nullptr);
     }
     ;
 header:

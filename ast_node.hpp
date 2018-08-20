@@ -10,28 +10,28 @@ enum class operation_type
     value
 };
 
-class expression
+class ast_node
 {
 public:
-    expression(const std::string& value, const expression* parent);
-    expression(operation_type type,
-        expression* left, expression* right, const expression* parent);
+    ast_node(const std::string& value, const ast_node* parent);
+    ast_node(operation_type type,
+        ast_node* left, ast_node* right, const ast_node* parent);
 
-    ~expression();
+    ~ast_node();
 
     const operation_type type() const;
     const std::string& value() const;
 
-    const expression* left() const;
-    const expression* right() const;
-    const expression* parent() const;
+    const ast_node* left() const;
+    const ast_node* right() const;
+    const ast_node* parent() const;
 
 private:
     const operation_type type_;
     const std::string value_;
 
-    expression* left_, * right_;
-    const expression* parent_;
+    ast_node* left_, * right_;
+    const ast_node* parent_;
 };
 
 } // namespace libdark
