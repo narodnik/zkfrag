@@ -3,13 +3,29 @@
 #include <iostream>
 using namespace std;
 
+#include "../expression.hpp"
+
 // Declare stuff from Flex that Bison needs to know about:
 extern "C" int yylex();
 extern int yyparse();
 extern FILE *yyin;
  
-void yyerror(const char *s);
+void yyerror(const char* s);
 %}
+
+// Include libdark::expression in the parser header
+%code requires {
+#ifndef EXPR_INCLUDE_HEADER
+#define EXPR_INCLUDE_HEADER
+
+#include "../expression.hpp"
+
+#endif
+}
+
+%output  "generated/parser.cpp"
+// Also output the header too
+%defines "generated/parser.hpp"
 
 // Bison fundamentally works by asking flex to get the next token, which it
 // returns as an object of type "yystype".  But tokens could be of any
@@ -19,6 +35,7 @@ void yyerror(const char *s);
 %union {
 	int ival;
 	char *sval;
+    libdark::expression* expr;
 }
 
 // define the constant-string tokens:
@@ -27,24 +44,30 @@ void yyerror(const char *s);
 %token L_BRACKET R_BRACKET REPRESENT LINEAR_EQUATION RANGE_PROOF ANY ALL
 %token VERSION DOT
 
-// Define the "terminal symbol" token types I'm going to use (in CAPS
-// by convention), and associate each with a field of the union:
+// Define the "terminal symbol" token types
+// and associate each with a field of the union:
 %token <ival> INT
 %token <fval> FLOAT
 %token <sval> TOKEN
 
+%type <expr> root
+
 %%
 
 snazzle:
-	header private prove { cout << "done with a snazzle file!" << endl; }
+	root header private prove { cout << "done with a snazzle file!" << endl; }
 	;
+root:
+    {
+        $$ = new libdark::expression("root", nullptr);
+    }
+    ;
 header:
 	VERSION version_number
 	;
 version_number:
-    INT DOT INT { cout << "version: " << $1 << "." << $3 << endl; }
+    INT DOT INT
     | INT DOT INT DOT INT
-    { cout << "version: " << $1 << "." << $3 << "." << $5 << endl; }
 
 private:
     PRIVATE COLON private_values
@@ -54,7 +77,7 @@ private_values:
     | private_value
     ;
 private_value:
-    TOKEN { cout << "new variable: " << $1 << endl; }
+    TOKEN
     ;
 
 prove:
@@ -70,12 +93,11 @@ statement:
     ;
 
 represent:
-    REPRESENT { cout << "represent:\n"; } L_BRACKET equality_expression R_BRACKET
-    { cout << "endrepr" << endl; }
+    REPRESENT L_BRACKET equality_expression R_BRACKET
+    ;
 
 linear_equation:
-    LINEAR_EQUATION { cout << "le:\n"; } L_BRACKET equality_expression R_BRACKET
-    { cout << "endle" << endl; }
+    LINEAR_EQUATION L_BRACKET equality_expression R_BRACKET
     ;
 
 range_proof:
@@ -99,25 +121,18 @@ expression:
 
 item:
     TOKEN TOKEN
-{ cout << "expr 1 2: " << $1 << " " << $2 << endl; }
     | TOKEN MULTIPLY TOKEN
-{ cout << "expr 1 3: " << $1 << " " << $3 << endl; }
     | TOKEN
-{ cout << "expr 1: " << $1 << endl; }
     | INT TOKEN
-{ cout << "expr intm: " << $1 << " " << $2 << endl; }
     | INT
-{ cout << "expr int: " << $1 << endl; }
     ;
 
 any:
-    ANY { cout << "any\n"; } L_BRACKET statements R_BRACKET
-    { cout << "endany" << endl; }
+    ANY L_BRACKET statements R_BRACKET
     ;
 
 all:
-    ALL { cout << "all\n"; } L_BRACKET statements R_BRACKET
-    { cout << "endall" << endl; }
+    ALL L_BRACKET statements R_BRACKET
     ;
 
 %%
@@ -135,10 +150,11 @@ int main(int, char**) {
 	
 	// Parse through the input:
 	yyparse();
-	
+
+    return 0;
 }
 
-void yyerror(const char *s) {
+void yyerror(const char* s) {
 	cout << "EEK, parse error!  Message: " << s << endl;
 	// might as well halt now:
 	exit(-1);

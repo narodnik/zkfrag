@@ -1,3 +1,3 @@
-flex snazzle.l
-bison -d snazzle.y
-g++ snazzle.tab.c lex.yy.c -lfl -o snazzle
+flex lexer.l
+bison -d parser.y
+g++ generated/lexer.cpp generated/parser.cpp expression.cpp -lfl -o snazzle
