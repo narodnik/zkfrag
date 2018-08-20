@@ -33,7 +33,6 @@ void yyerror(const char* s);
 // holding each of the types of tokens that Flex could return, and have Bison
 // use that union instead of "int" for the definition of "yystype":
 %union {
-	int ival;
 	char *sval;
     libdark::ast_node* ast;
 }
@@ -46,28 +45,42 @@ void yyerror(const char* s);
 
 // Define the "terminal symbol" token types
 // and associate each with a field of the union:
-%token <ival> INT
-%token <fval> FLOAT
+%token <sval> INT
 %token <sval> TOKEN
 
-%type <ast> root
+%type <ast> program header version_number
 
 %%
 
-snazzle:
-	root header private prove { cout << "done with a snazzle file!" << endl; }
-	;
-root:
+program:
+	header private prove
     {
-        $$ = new libdark::ast_node("root", nullptr);
+        $$ = new libdark::ast_node(libdark::operation_type::root, $1, nullptr);
     }
-    ;
+	;
 header:
 	VERSION version_number
+    {
+        $$ = $2;
+    }
 	;
 version_number:
     INT DOT INT
+    {
+        std::string version = $1;
+        version += ".";
+        version += $3;
+        $$ = new libdark::ast_node(version);
+    }
     | INT DOT INT DOT INT
+    {
+        std::string version = $1;
+        version += ".";
+        version += $3;
+        version += ".";
+        version += $5;
+        $$ = new libdark::ast_node(version);
+    }
 
 private:
     PRIVATE COLON private_values

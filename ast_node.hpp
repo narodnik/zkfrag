@@ -7,17 +7,20 @@ namespace libdark {
 
 enum class operation_type
 {
+    root,
     value
 };
 
 class ast_node
 {
 public:
-    ast_node(const std::string& value, const ast_node* parent);
+    ast_node(const std::string& value);
     ast_node(operation_type type,
-        ast_node* left, ast_node* right, const ast_node* parent);
+        ast_node* left, ast_node* right);
 
     ~ast_node();
+
+    void set_parent(ast_node* parent);
 
     const operation_type type() const;
     const std::string& value() const;
@@ -31,7 +34,7 @@ private:
     const std::string value_;
 
     ast_node* left_, * right_;
-    const ast_node* parent_;
+    ast_node* parent_;
 };
 
 } // namespace libdark
