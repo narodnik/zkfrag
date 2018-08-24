@@ -13,7 +13,6 @@
     #include <string>
     #include <vector>
     #include <stdint.h>
-    #include "../command.hpp"
     #include "../ast_node.hpp"
 
     namespace libdark {
