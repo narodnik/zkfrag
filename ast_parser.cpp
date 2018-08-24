@@ -30,7 +30,7 @@ void ast_driver::increase_location(unsigned int distance)
 
 unsigned int ast_driver::location() const
 {
-    return 0;
+    return location_;
 }
 
 } // namespace libdark
