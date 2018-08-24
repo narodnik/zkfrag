@@ -1,19 +1,19 @@
 %{
-	#include <iostream>
-	#include <cstdlib>
-	#include "../scanner.hpp"
-	#include "../ast_parser.hpp"
-	#include "parser.hpp"
-	#include "location.hh"
-
-	// Original yyterminate() macro returns int. Since we're using
+    #include <iostream>
+    #include <cstdlib>
+    #include "../scanner.hpp"
+    #include "../ast_parser.hpp"
+    #include "parser.hpp"
+    #include "location.hh"
+    
+    // Original yyterminate() macro returns int. Since we're using
     // Bison 3 variants as tokens, we must redefine it to change type
     // from `int` to `bison_parser::semantic_type`
-	#define yyterminate() libdark::bison_parser::make_END(libdark::location());
-
-	// This will track current scanner location.
-	// Action is called when length of the token is known.
-	#define YY_USER_ACTION driver_.increase_location(yyleng);
+    #define yyterminate() libdark::bison_parser::make_END(libdark::location());
+    
+    // This will track current scanner location.
+    // Action is called when length of the token is known.
+    #define YY_USER_ACTION driver_.increase_location(yyleng);
 %}
 
 %option nodefault
