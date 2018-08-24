@@ -45,8 +45,6 @@
     // you can accomplish the same thing by inlining the code using preprocessor
     // x and y are same as in above static function
     // #define yylex(x, y) scanner.get_next_token()
-    
-    using namespace libdark;
 }
 
 %output  "generated/parser.cpp"
