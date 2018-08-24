@@ -94,6 +94,7 @@
 //%type< std::vector<uint64_t> > arguments;
 
 %type < libdark::ast_node_ptr > program header version_number
+    private private_values private_value
 
 %start program
 
@@ -103,7 +104,7 @@ program:
 	header private prove
     {
         $$ = std::make_shared<libdark::ast_node>(
-            libdark::operation_type::root, $1, nullptr);
+            libdark::ast_node_type::root, $1, $2);
     }
 	;
 header:
@@ -118,7 +119,8 @@ version_number:
         std::string version = $1;
         version += ".";
         version += $3;
-        $$ = std::make_shared<libdark::ast_node>(version);
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_node_type::version, version);
         std::cout << "version: " << version << std::endl;
     }
     | INT DOT INT DOT INT
@@ -128,26 +130,46 @@ version_number:
         version += $3;
         version += ".";
         version += $5;
-        $$ = std::make_shared<libdark::ast_node>(version);
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_node_type::version, version);
     }
 
 private:
     PRIVATE COLON private_values
+    {
+        $$ = $3;
+    }
     ;
 private_values:
     private_values COMMA private_value
+    {
+        std::cout << "joining: " << $1->value() << " + "
+            << $3->value() << std::endl;
+        $1->set_left($3);
+        $$ = $1;
+    }
     | private_value
+    {
+        $$ = $1;
+    }
     ;
 private_value:
     TOKEN
     {
-        std::cout << "private value: " << $1 << std::endl;
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_node_type::private_value, $1);
     }
     ;
 
 prove:
     PROVE COLON statements
+    {
+        std::cout << "prove\n";
+    }
     | PROVE COLON
+    {
+        std::cout << "prove\n";
+    }
     ;
 statements:
     statements COMMA statement
