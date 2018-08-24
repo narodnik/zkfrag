@@ -1,61 +1,136 @@
-%{
-#include <cstdio>
-#include <iostream>
-using namespace std;
+/*
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) 2014 Krzysztof Narkiewicz <krzysztof.narkiewicz@ezaquarii.com>
+ * 
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ * 
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ * 
+ */
 
-#include "../ast_node.hpp"
+%skeleton "lalr1.cc" /* -*- C++ -*- */
+%require "3.0"
+%defines
+%define parser_class_name { bison_parser }
 
-// Declare stuff from Flex that Bison needs to know about:
-extern "C" int yylex();
-extern int yyparse();
-extern FILE *yyin;
- 
-void yyerror(const char* s);
-%}
+%define api.token.constructor
+%define api.value.type variant
+%define parse.assert
+%define api.namespace { libdark }
+%code requires
+{
+    #include <iostream>
+    #include <string>
+    #include <vector>
+    #include <stdint.h>
+    #include "../command.hpp"
+    #include "../ast_node.hpp"
 
-// Include libdark::ast_node in the parser header
-%code requires {
-#ifndef EXPR_INCLUDE_HEADER
-#define EXPR_INCLUDE_HEADER
+    namespace libdark {
+        class flex_scanner;
+        class ast_driver;
+    }
+}
 
-#include "../ast_node.hpp"
-
-#endif
+// Bison calls yylex() function that must be provided by us to suck tokens
+// from the scanner. This block will be placed at the beginning of IMPLEMENTATION file (cpp).
+// We define this function here (function! not method).
+// This function is called only inside Bison, so we make it static to limit symbol visibility for the linker
+// to avoid potential linking conflicts.
+%code top
+{
+    #include <iostream>
+    #include "../scanner.hpp"
+    #include "parser.hpp"
+    #include "../ast_parser.hpp"
+    #include "location.hh"
+    
+    // yylex() arguments are defined in parser.y
+    static libdark::bison_parser::symbol_type yylex(
+        libdark::flex_scanner &scanner, libdark::ast_driver &driver)
+    {
+        return scanner.get_next_token();
+    }
+    
+    // you can accomplish the same thing by inlining the code using preprocessor
+    // x and y are same as in above static function
+    // #define yylex(x, y) scanner.get_next_token()
+    
+    using namespace libdark;
 }
 
 %output  "generated/parser.cpp"
 // Also output the header too
 %defines "generated/parser.hpp"
 
-// Bison fundamentally works by asking flex to get the next token, which it
-// returns as an object of type "yystype".  But tokens could be of any
-// arbitrary data type!  So we deal with that in Bison by defining a C union
-// holding each of the types of tokens that Flex could return, and have Bison
-// use that union instead of "int" for the definition of "yystype":
-%union {
-	char *sval;
-    libdark::ast_node* ast;
-}
+%lex-param { libdark::flex_scanner &scanner }
+%lex-param { libdark::ast_driver &driver }
+%parse-param { libdark::flex_scanner &scanner }
+%parse-param { libdark::ast_driver &driver }
+%locations
+%define parse.trace
+%define parse.error verbose
 
-// define the constant-string tokens:
-%token COMMA COLON EQUAL MULTIPLY PLUS PRIVATE PROVE
-%token LESS_EQ GREATER_EQ LESS GREATER
-%token L_BRACKET R_BRACKET REPRESENT LINEAR_EQUATION RANGE_PROOF ANY ALL
-%token VERSION DOT
+%define api.token.prefix {TOKEN_}
 
-// Define the "terminal symbol" token types
-// and associate each with a field of the union:
-%token <sval> INT
-%token <sval> TOKEN
+%token END 0 "end of file"
+//%token <uint64_t> NUMBER "number";
 
-%type <ast> program header version_number
+%token COMMA "comma"
+%token COLON "colon"
+%token EQUAL "equal"
+%token MULTIPLY "multiply"
+%token PLUS "plus"
+%token PRIVATE "private"
+%token PROVE "prove"
+%token LESS_EQ "less_eq"
+%token GREATER_EQ "greater_eq"
+%token LESS "less"
+%token GREATER "greater"
+%token L_BRACKET "l_bracket"
+%token R_BRACKET "r_bracket"
+%token REPRESENT "represent"
+%token LINEAR_EQUATION "linear_equation"
+%token RANGE_PROOF "range_proof"
+%token ANY "any"
+%token ALL "all"
+%token VERSION "version"
+%token DOT "dot"
+%token <std::string> INT "int";
+%token <std::string> TOKEN "token";
+
+//%type< libdark::Command > command;
+//%type< std::vector<uint64_t> > arguments;
+
+%type < libdark::ast_node_ptr > program header version_number
+
+%start program
 
 %%
 
 program:
 	header private prove
     {
-        $$ = new libdark::ast_node(libdark::operation_type::root, $1, nullptr);
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::operation_type::root, $1, nullptr);
     }
 	;
 header:
@@ -70,7 +145,8 @@ version_number:
         std::string version = $1;
         version += ".";
         version += $3;
-        $$ = new libdark::ast_node(version);
+        $$ = std::make_shared<libdark::ast_node>(version);
+        std::cout << "version: " << version << std::endl;
     }
     | INT DOT INT DOT INT
     {
@@ -79,7 +155,7 @@ version_number:
         version += $3;
         version += ".";
         version += $5;
-        $$ = new libdark::ast_node(version);
+        $$ = std::make_shared<libdark::ast_node>(version);
     }
 
 private:
@@ -91,6 +167,9 @@ private_values:
     ;
 private_value:
     TOKEN
+    {
+        std::cout << "private value: " << $1 << std::endl;
+    }
     ;
 
 prove:
@@ -147,29 +226,14 @@ any:
 all:
     ALL L_BRACKET statements R_BRACKET
     ;
-
+    
 %%
 
-int main(int, char**) {
-	// Open a file handle to a particular file:
-	FILE *myfile = fopen("a.snazzle.file", "r");
-	// Make sure it is valid:
-	if (!myfile) {
-		cout << "I can't open a.snazzle.file!" << endl;
-		return -1;
-	}
-	// Set Flex to read from it instead of defaulting to STDIN:
-	yyin = myfile;
-	
-	// Parse through the input:
-	yyparse();
-
-    return 0;
+// Bison expects us to provide implementation - otherwise linker complains
+void libdark::bison_parser::error(
+    const location &loc , const std::string &message)
+{
+    std::cerr << "Error: " << message << std::endl
+        << "Location: " << driver.location() << std::endl;
 }
-
-void yyerror(const char* s) {
-	cout << "EEK, parse error!  Message: " << s << endl;
-	// might as well halt now:
-	exit(-1);
-}
-
+ 
