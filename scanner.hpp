@@ -40,8 +40,8 @@ class flex_scanner
 {
 public:
     flex_scanner(ast_driver &driver) : driver_(driver) {}
-	virtual ~flex_scanner() {}
-	virtual libdark::bison_parser::symbol_type get_next_token();
+    virtual ~flex_scanner() {}
+    virtual libdark::bison_parser::symbol_type get_next_token();
         
 private:
     ast_driver &driver_;
