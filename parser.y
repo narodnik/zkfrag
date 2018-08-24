@@ -62,7 +62,6 @@
 %define api.token.prefix {TOKEN_}
 
 %token END 0 "end of file"
-//%token <uint64_t> NUMBER "number";
 
 %token COMMA "comma"
 %token COLON "colon"
@@ -86,9 +85,6 @@
 %token DOT "dot"
 %token <std::string> INT "int";
 %token <std::string> TOKEN "token";
-
-//%type< libdark::Command > command;
-//%type< std::vector<uint64_t> > arguments;
 
 %type < libdark::ast_node_ptr > program header version_number
     private private_values private_value
