@@ -1,31 +1,3 @@
-/*
- * The MIT License (MIT)
- * 
- * Copyright (c) 2014 Krzysztof Narkiewicz <krzysztof.narkiewicz@ezaquarii.com>
- * 
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
- * conditions:
- * 
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
- * 
- */
-
 %skeleton "lalr1.cc" /* -*- C++ -*- */
 %require "3.0"
 %defines
@@ -51,10 +23,11 @@
 }
 
 // Bison calls yylex() function that must be provided by us to suck tokens
-// from the scanner. This block will be placed at the beginning of IMPLEMENTATION file (cpp).
+// from the scanner.
+// This block will be placed at the beginning of IMPLEMENTATION file (cpp).
 // We define this function here (function! not method).
-// This function is called only inside Bison, so we make it static to limit symbol visibility for the linker
-// to avoid potential linking conflicts.
+// This function is called only inside Bison, so we make it static to
+// limit symbol visibility for the linker to avoid potential linking conflicts.
 %code top
 {
     #include <iostream>
