@@ -24,7 +24,7 @@
 %option outfile="generated/scanner.cpp" header-file="generated/scanner.hpp"
 
 %%
-[ \t\n]         ;
+[ \t\n] ;
 ,       {
             return libdark::bison_parser::make_COMMA(
                 libdark::location());
@@ -115,6 +115,8 @@ version {
         }
 .       ;
             
-<<EOF>>     { return yyterminate(); }
+<<EOF>> {
+            return yyterminate();
+        }
 
 %%
