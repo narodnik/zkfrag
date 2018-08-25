@@ -106,7 +106,7 @@ version {
                 libdark::location());
         }
 [0-9]+  {
-            return libdark::bison_parser::make_INT(
+            return libdark::bison_parser::make_NUMBER(
                 yytext, libdark::location()); 
         }
 [a-zA-Z]+[a-zA-Z0-9_]*  {

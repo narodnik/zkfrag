@@ -17,7 +17,20 @@ enum class ast_type
     private_section,
     private_value,
     prove_section,
-    token
+    represent,
+    linear_equation,
+    range_proof,
+    any,
+    all,
+    equal,
+    less_equal,
+    greater_equal,
+    less,
+    greater,
+    sum,
+    multiply,
+    variable,
+    number
 };
 
 std::string ast_type_to_string(const ast_type type);

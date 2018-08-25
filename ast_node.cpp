@@ -18,8 +18,34 @@ std::string ast_type_to_string(const ast_type type)
             return "private_value";
         case ast_type::prove_section:
             return "prove_section";
-        case ast_type::token:
-            return "token";
+        case ast_type::represent:
+            return "represent";
+        case ast_type::linear_equation:
+            return "linear_equation";
+        case ast_type::range_proof:
+            return "range_proof";
+        case ast_type::any:
+            return "any";
+        case ast_type::all:
+            return "all";
+        case ast_type::equal:
+            return "equal";
+        case ast_type::less_equal:
+            return "less_equal";
+        case ast_type::greater_equal:
+            return "greater_equal";
+        case ast_type::less:
+            return "less";
+        case ast_type::greater:
+            return "greater";
+        case ast_type::variable:
+            return "variable";
+        case ast_type::sum:
+            return "sum";
+        case ast_type::multiply:
+            return "multiply";
+        case ast_type::number:
+            return "number";
     }
     assert(false);
     // Shouldn't ever reach here!

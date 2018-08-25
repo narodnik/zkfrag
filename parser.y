@@ -83,13 +83,15 @@
 %token ALL "all"
 %token VERSION "version"
 %token DOT "dot"
-%token <std::string> INT "int";
+%token <std::string> NUMBER "number";
 %token <std::string> TOKEN "token";
 
 %type < libdark::ast_node_ptr > program header version_number
-    private private_value
+    private private_value prove statement
+    represent linear_equation range_proof any all
+    equality_expression range_expression expression item
 
-%type < libdark::ast_node_list > private_values
+%type < libdark::ast_node_list > private_values statements
 
 %start program
 
@@ -101,6 +103,7 @@ program:
         $$ = std::make_shared<libdark::ast_node>(libdark::ast_type::root);
         $$->children.push_back($1);
         $$->children.push_back($2);
+        $$->children.push_back($3);
 
         for (const auto child: $$->children)
             std::cout << ast_type_to_string(child->type) << ": "
@@ -116,7 +119,7 @@ header:
     }
 	;
 version_number:
-    INT DOT INT
+    NUMBER DOT NUMBER
     {
         std::string version = $1;
         version += ".";
@@ -124,7 +127,7 @@ version_number:
         $$ = std::make_shared<libdark::ast_node>(
             libdark::ast_type::version, version);
     }
-    | INT DOT INT DOT INT
+    | NUMBER DOT NUMBER DOT NUMBER
     {
         std::string version = $1;
         version += ".";
@@ -149,7 +152,7 @@ private_values:
     private_values COMMA private_value
     {
         $1.push_back($3);
-        $$ = $1;
+        $$ = std::move($1);
     }
     | private_value
     {
@@ -167,62 +170,194 @@ private_value:
 prove:
     PROVE COLON statements
     {
-        std::cout << "prove\n";
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::prove_section);
+        $$->children = std::move($3);
     }
     | PROVE COLON
     {
-        std::cout << "prove\n";
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::prove_section);
     }
     ;
 statements:
     statements COMMA statement
+    {
+        $1.push_back($3);
+        $$ = std::move($1);
+    }
     | statement
+    {
+        $$.push_back($1);
+    }
     ;
 statement:
-    represent | linear_equation | range_proof | any | all
+    represent
+    {
+        $$ = std::move($1);
+    }
+    | linear_equation
+    {
+        $$ = std::move($1);
+    }
+    | range_proof
+    {
+        $$ = std::move($1);
+    }
+    | any
+    {
+        $$ = std::move($1);
+    }
+    | all
+    {
+        $$ = std::move($1);
+    }
     ;
 
 represent:
     REPRESENT L_BRACKET equality_expression R_BRACKET
+    {
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::represent);
+        $$->children.push_back($3);
+    }
     ;
 
 linear_equation:
     LINEAR_EQUATION L_BRACKET equality_expression R_BRACKET
+    {
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::linear_equation);
+        $$->children.push_back($3);
+    }
     ;
 
 range_proof:
     RANGE_PROOF L_BRACKET range_expression R_BRACKET
+    {
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::range_proof);
+        $$->children.push_back($3);
+    }
     ;
 
 equality_expression:
     expression EQUAL expression
+    {
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::equal);
+        $$->children.push_back($1);
+        $$->children.push_back($3);
+    }
+    ;
 
 range_expression:
     expression LESS_EQ expression
+    {
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::less_equal);
+        $$->children.push_back($1);
+        $$->children.push_back($3);
+    }
     | expression GREATER_EQ expression
+    {
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::greater_equal);
+        $$->children.push_back($1);
+        $$->children.push_back($3);
+    }
     | expression LESS expression
+    {
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::less);
+        $$->children.push_back($1);
+        $$->children.push_back($3);
+    }
     | expression GREATER expression
+    {
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::greater);
+        $$->children.push_back($1);
+        $$->children.push_back($3);
+    }
     ;
 
 expression:
     expression PLUS item
+    {
+        $1->children.push_back($3);
+        $$ = std::move($1);
+    }
     | item
+    {
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::sum);
+        $$->children.push_back($1);
+    }
     ;
 
 item:
     TOKEN TOKEN
+    {
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::multiply);
+        auto value_1 = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::variable, $1);
+        auto value_2 = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::variable, $2);
+        $$->children.push_back(value_1);
+        $$->children.push_back(value_2);
+    }
     | TOKEN MULTIPLY TOKEN
+    {
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::multiply);
+        auto value_1 = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::variable, $1);
+        auto value_2 = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::variable, $3);
+        $$->children.push_back(value_1);
+        $$->children.push_back(value_2);
+    }
     | TOKEN
-    | INT TOKEN
-    | INT
+    {
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::variable, $1);
+    }
+    | NUMBER TOKEN
+    {
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::multiply);
+        auto value_1 = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::number, $1);
+        auto value_2 = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::variable, $2);
+        $$->children.push_back(value_1);
+        $$->children.push_back(value_2);
+    }
+    | NUMBER
+    {
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::number, $1);
+    }
     ;
 
 any:
     ANY L_BRACKET statements R_BRACKET
+    {
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::any);
+        $$->children = std::move($3);
+    }
     ;
 
 all:
     ALL L_BRACKET statements R_BRACKET
+    {
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::all);
+        $$->children = std::move($3);
+    }
     ;
     
 %%

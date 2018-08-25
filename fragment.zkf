@@ -6,8 +6,10 @@ prove:
     represent(xx yy = d),
     represent(Public = ephemeral * G),
     any(
-        represent(xx yy = d),
-        represent(Public = ephemeral * G),
+        all(
+            represent(xx yy = d),
+            represent(Public = ephemeral * G)
+        ),
         linear_equation(b_1 = a_1 * x_1 + a_2 * x_2 + a_3 * x_3),
         linear_equation(b_2 = a_1 * x_2 + a_2 * x_3 + a_3 * x_1),
         any(
