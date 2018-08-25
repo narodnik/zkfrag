@@ -87,7 +87,9 @@
 %token <std::string> TOKEN "token";
 
 %type < libdark::ast_node_ptr > program header version_number
-    private private_values private_value
+    private private_value
+
+%type < libdark::ast_node_list > private_values
 
 %start program
 
@@ -96,8 +98,15 @@
 program:
 	header private prove
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_node_type::root, $1, $2);
+        $$ = std::make_shared<libdark::ast_node>(libdark::ast_type::root);
+        $$->children.push_back($1);
+        $$->children.push_back($2);
+
+        for (const auto child: $$->children)
+            std::cout << ast_type_to_string(child->type) << ": "
+                << child->value << std::endl;
+
+        driver.root = $$;
     }
 	;
 header:
@@ -113,8 +122,7 @@ version_number:
         version += ".";
         version += $3;
         $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_node_type::version, version);
-        std::cout << "version: " << version << std::endl;
+            libdark::ast_type::version, version);
     }
     | INT DOT INT DOT INT
     {
@@ -124,33 +132,35 @@ version_number:
         version += ".";
         version += $5;
         $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_node_type::version, version);
+            libdark::ast_type::version, version);
     }
 
 private:
     PRIVATE COLON private_values
     {
-        $$ = $3;
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::private_section);
+        $$->children = std::move($3);
+        for (auto x: $$->children)
+            std::cout << "Private: " << x->value << std::endl;
     }
     ;
 private_values:
     private_values COMMA private_value
     {
-        std::cout << "joining: " << $1->value() << " + "
-            << $3->value() << std::endl;
-        $1->set_left($3);
+        $1.push_back($3);
         $$ = $1;
     }
     | private_value
     {
-        $$ = $1;
+        $$.push_back($1);
     }
     ;
 private_value:
     TOKEN
     {
         $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_node_type::private_value, $1);
+            libdark::ast_type::private_value, $1);
     }
     ;
 

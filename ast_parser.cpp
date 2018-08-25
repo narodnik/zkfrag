@@ -20,7 +20,7 @@ ast_node_ptr ast_parser::parse(std::istream& stream)
     }
 
     // Return root value
-    return nullptr;
+    return driver.root;
 }
 
 void ast_driver::increase_location(unsigned int distance)

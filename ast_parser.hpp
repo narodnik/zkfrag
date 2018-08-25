@@ -19,6 +19,8 @@ public:
     
     unsigned int location() const;
 
+    ast_node_ptr root;
+
 private:
     unsigned int location_ = 0;
 };
