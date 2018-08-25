@@ -9,10 +9,7 @@
 %define api.namespace { libdark }
 %code requires
 {
-    #include <iostream>
     #include <string>
-    #include <vector>
-    #include <stdint.h>
     #include "../ast_node.hpp"
 
     namespace libdark {
@@ -29,7 +26,6 @@
 // limit symbol visibility for the linker to avoid potential linking conflicts.
 %code top
 {
-    #include <iostream>
     #include "../scanner.hpp"
     #include "parser.hpp"
     #include "../ast_parser.hpp"
@@ -105,10 +101,6 @@ program:
         $$->children.push_back($2);
         $$->children.push_back($3);
 
-        for (const auto child: $$->children)
-            std::cout << ast_type_to_string(child->type) << ": "
-                << child->value << std::endl;
-
         driver.root = $$;
     }
 	;
@@ -144,8 +136,6 @@ private:
         $$ = std::make_shared<libdark::ast_node>(
             libdark::ast_type::private_section);
         $$->children = std::move($3);
-        for (auto x: $$->children)
-            std::cout << "Private: " << x->value << std::endl;
     }
     ;
 private_values:
