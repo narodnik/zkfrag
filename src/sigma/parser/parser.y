@@ -10,7 +10,7 @@
 %code requires
 {
     #include <string>
-    #include "../ast_node.hpp"
+    #include <libdark/sigma/ast_node.hpp>
 
     namespace libdark {
         class flex_scanner;
@@ -28,7 +28,7 @@
 {
     #include "../scanner.hpp"
     #include "parser.hpp"
-    #include "../ast_parser.hpp"
+    #include <libdark/sigma/ast_parser.hpp>
     #include "location.hh"
     
     // yylex() arguments are defined in parser.y
@@ -43,9 +43,9 @@
     // #define yylex(x, y) scanner.get_next_token()
 }
 
-%output  "generated/parser.cpp"
+%output  "src/sigma/parser/generated/parser.cpp"
 // Also output the header too
-%defines "generated/parser.hpp"
+%defines "src/sigma/parser/generated/parser.hpp"
 
 %lex-param { libdark::flex_scanner &scanner }
 %lex-param { libdark::ast_driver &driver }

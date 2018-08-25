@@ -1,4 +1,4 @@
-#include "ast_node.hpp"
+#include <libdark/sigma/ast_node.hpp>
 
 #include <cassert>
 

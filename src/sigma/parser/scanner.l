@@ -2,7 +2,7 @@
     #include <iostream>
     #include <cstdlib>
     #include "../scanner.hpp"
-    #include "../ast_parser.hpp"
+    #include <libdark/sigma/ast_parser.hpp>
     #include "parser.hpp"
     #include "location.hh"
     
@@ -21,7 +21,7 @@
 %option c++
 %option yyclass="flex_scanner"
 %option prefix="libdark_"
-%option outfile="generated/scanner.cpp" header-file="generated/scanner.hpp"
+%option outfile="src/sigma/parser/generated/scanner.cpp" header-file="src/sigma/parser/generated/scanner.hpp"
 
 %%
 [ \t\n] ;

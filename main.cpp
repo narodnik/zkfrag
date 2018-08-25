@@ -3,7 +3,7 @@
 #include <iterator>
 #include <string>
 
-#include "ast_parser.hpp"
+#include <libdark/sigma/ast_parser.hpp>
 
 void print_ast(libdark::ast_node_ptr node, size_t indent=0)
 {

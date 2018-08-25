@@ -1,7 +1,7 @@
-#include "ast_parser.hpp"
+#include <libdark/sigma/ast_parser.hpp>
 
-#include "scanner.hpp"
-#include "generated/parser.hpp"
+#include "parser/scanner.hpp"
+#include "parser/generated/parser.hpp"
 
 namespace libdark {
 
