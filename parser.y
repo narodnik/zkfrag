@@ -356,7 +356,6 @@ all:
 void libdark::bison_parser::error(
     const location &loc , const std::string &message)
 {
-    std::cerr << "Error: " << message << std::endl
-        << "Location: " << driver.location() << std::endl;
+    driver.error_message = message;
 }
  

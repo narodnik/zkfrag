@@ -15,12 +15,19 @@ ast_node_ptr ast_parser::parse(std::istream& stream)
     int rc = parser.parse();
     if (rc != 0)
     {
+        error_.location = driver.location();
+        error_.message = driver.error_message;
         // Find line based off location within input stream
         return nullptr;
     }
 
     // Return root value
     return driver.root;
+}
+
+const ast_parser_error ast_parser::error() const
+{
+    return error_;
 }
 
 void ast_driver::increase_location(unsigned int distance)
