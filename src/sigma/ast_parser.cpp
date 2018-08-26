@@ -7,7 +7,7 @@ namespace libdark {
 
 ast_node_ptr ast_parser::parse(std::istream& stream)
 {
-    ast_driver driver;
+    ast_parser_driver driver;
     flex_scanner scanner(driver);
     bison_parser parser(scanner, driver);
 
@@ -30,12 +30,12 @@ const ast_parser_error ast_parser::error() const
     return error_;
 }
 
-void ast_driver::increase_location(unsigned int distance)
+void ast_parser_driver::increase_location(unsigned int distance)
 {
     location_ += distance;
 }
 
-unsigned int ast_driver::location() const
+unsigned int ast_parser_driver::location() const
 {
     return location_;
 }

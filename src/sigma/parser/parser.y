@@ -14,7 +14,7 @@
 
     namespace libdark {
         class flex_scanner;
-        class ast_driver;
+        class ast_parser_driver;
     }
 }
 
@@ -33,7 +33,7 @@
     
     // yylex() arguments are defined in parser.y
     static libdark::bison_parser::symbol_type yylex(
-        libdark::flex_scanner &scanner, libdark::ast_driver &driver)
+        libdark::flex_scanner &scanner, libdark::ast_parser_driver &driver)
     {
         return scanner.get_next_token();
     }
@@ -48,9 +48,9 @@
 %defines "src/sigma/parser/generated/parser.hpp"
 
 %lex-param { libdark::flex_scanner &scanner }
-%lex-param { libdark::ast_driver &driver }
+%lex-param { libdark::ast_parser_driver &driver }
 %parse-param { libdark::flex_scanner &scanner }
-%parse-param { libdark::ast_driver &driver }
+%parse-param { libdark::ast_parser_driver &driver }
 %locations
 %define parse.trace
 %define parse.error verbose

@@ -23,7 +23,7 @@ private:
     ast_parser_error error_;
 };
 
-class ast_driver
+class ast_parser_driver
 {
 public:
     void increase_location(unsigned int distance);
