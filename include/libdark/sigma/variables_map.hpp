@@ -19,6 +19,9 @@ public:
     bc::ec_point* point();
     bc::ec_scalar* scalar();
 
+    const bc::ec_point* point() const;
+    const bc::ec_scalar* scalar() const;
+
 private:
     union
     {

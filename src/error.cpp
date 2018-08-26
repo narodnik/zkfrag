@@ -29,6 +29,10 @@ std::string error_category_impl::message(int ev) const
         return "success";
     case libdark::error::missing_variable:
         return "missing variable";
+    case libdark::error::invalid_children:
+        return "invalid children";
+    case libdark::error::invalid_multiplication:
+        return "invalid_multiplication";
     }
     return "invalid code";
 }

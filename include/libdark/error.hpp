@@ -8,7 +8,9 @@ namespace libdark {
 enum class error
 {
     success = 0,
-    missing_variable
+    missing_variable,
+    invalid_children,
+    invalid_multiplication
 };
 
 std::error_code make_error_code(error ec);

@@ -2,7 +2,6 @@
 #include <iostream>
 #include <iterator>
 #include <string>
-
 #include <libdark.hpp>
 
 void print_ast(libdark::ast_node_ptr node, size_t indent=0)
@@ -76,17 +75,19 @@ int main(int argc, char** argv)
     const auto& d = *variables["d"].scalar();
     variables["Q"] = d * G;
 
-    const auto flat = libdark::flatten_tree(root);
-    for (const auto node: flat)
+    DARK_ASSERT(variables["G"].point());
+    DARK_ASSERT(variables["d"].scalar());
+    DARK_ASSERT(variables["Q"].point());
+
+    const auto result = check_rules(root, variables);
+    const auto ec = result.first;
+    if (ec)
     {
-        const auto ec = check_rules(node, variables);
-        if (ec)
-        {
-            std::cerr << "Error validating fragment: "
-                << ec.message() << std::endl;
-            print_ast(node);
-            return -1;
-        }
+        const auto node = result.second;
+        std::cerr << "Error validating fragment: "
+            << ec.message() << std::endl;
+        print_ast(node);
+        return -1;
     }
 
     return 0;

@@ -27,5 +27,18 @@ bc::ec_scalar* sigma_variant::scalar()
     return &scalar_;
 }
 
+const bc::ec_point* sigma_variant::point() const
+{
+    if (type_ != type::point)
+        return nullptr;
+    return &point_;
+}
+const bc::ec_scalar* sigma_variant::scalar() const
+{
+    if (type_ != type::scalar)
+        return nullptr;
+    return &scalar_;
+}
+
 } // namespace libdark
 
