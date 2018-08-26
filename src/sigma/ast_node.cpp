@@ -1,6 +1,6 @@
 #include <libdark/sigma/ast_node.hpp>
 
-#include <cassert>
+#include <libdark/utility/assert.hpp>
 
 namespace libdark {
 
@@ -47,7 +47,7 @@ std::string ast_type_to_string(const ast_type type)
         case ast_type::number:
             return "number";
     }
-    assert(false);
+    DARK_ASSERT(false);
     // Shouldn't ever reach here!
     return "ERROR";
 }
