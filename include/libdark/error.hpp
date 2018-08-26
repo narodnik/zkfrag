@@ -10,7 +10,8 @@ enum class error
     success = 0,
     missing_variable,
     invalid_children,
-    invalid_multiplication
+    invalid_multiplication,
+    non_scalar_private
 };
 
 std::error_code make_error_code(error ec);

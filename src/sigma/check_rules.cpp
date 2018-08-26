@@ -7,8 +7,11 @@ namespace libdark {
 bool variable_listed(
     const libdark::ast_node_ptr node, const libdark::variables_map variables)
 {
-    if (node->type != ast_type::variable)
+    if (node->type != ast_type::variable &&
+        node->type != ast_type::private_value)
+    {
         return true;
+    }
 
     if (variables.find(node->value) == variables.end())
         return false;
@@ -80,6 +83,21 @@ bool scalar_by_point(
     return true;
 }
 
+bool private_is_scalar(
+    const libdark::ast_node_ptr node, const libdark::variables_map variables)
+{
+    if (node->type != ast_type::private_value)
+        return true;
+
+    const auto iterator = variables.find(node->value);
+    DARK_ASSERT(iterator != variables.end());
+
+    if (!iterator->second.scalar())
+        return false;
+
+    return true;
+}
+
 rules_error_result check_rules(
     const libdark::ast_node_ptr root, const libdark::variables_map variables)
 {
@@ -99,6 +117,11 @@ rules_error_result check_rules(
     for (const auto node: flat)
         if (!scalar_by_point(node, variables))
             return { error::invalid_multiplication, node };
+
+    // Private values are only scalars
+    for (const auto node: flat)
+        if (!private_is_scalar(node, variables))
+            return { error::non_scalar_private, node };
 
     // Checks passed
     return { error::success, nullptr };

@@ -33,6 +33,8 @@ std::string error_category_impl::message(int ev) const
         return "invalid children";
     case libdark::error::invalid_multiplication:
         return "invalid_multiplication";
+    case libdark::error::non_scalar_private:
+        return "non scalar private value";
     }
     return "invalid code";
 }
