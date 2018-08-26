@@ -85,7 +85,7 @@
 %type < libdark::ast_node_ptr > program header version_number
     private private_value prove statement
     represent linear_equation range_proof any all
-    equality_expression range_expression sum_expression expression item
+    equality_expression range_expression expression item
 
 %type < libdark::ast_node_list > private_values statements
 
@@ -273,28 +273,16 @@ range_expression:
     ;
 
 expression:
-    sum_expression
-    {
-        $$ = std::move($1);
-    }
-    | item
-    {
-        $$ = std::move($1);
-    }
-    ;
-
-sum_expression:
-    sum_expression PLUS item
+    expression PLUS item
     {
         $1->children.push_back($3);
         $$ = std::move($1);
     }
-    | item PLUS item
+    | item
     {
         $$ = std::make_shared<libdark::ast_node>(
             libdark::ast_type::sum);
         $$->children.push_back($1);
-        $$->children.push_back($3);
     }
     ;
 
