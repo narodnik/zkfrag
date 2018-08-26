@@ -46,6 +46,8 @@ struct ast_node
     ast_node_list children;
 };
 
+ast_node_list flatten_tree(ast_node_ptr node);
+
 } // namespace libdark
 
 #endif

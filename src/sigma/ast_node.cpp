@@ -61,5 +61,17 @@ ast_node::ast_node(const ast_type type, const std::string &value)
 {
 }
 
+ast_node_list flatten_tree(ast_node_ptr node)
+{
+    ast_node_list flat;
+    flat.push_back(node);
+    for (auto child: node->children)
+    {
+        auto subtree = flatten_tree(child);
+        flat.splice(flat.end(), subtree);
+    }
+    return flat;
+}
+
 } // namespace libdark
 

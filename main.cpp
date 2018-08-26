@@ -4,6 +4,7 @@
 #include <string>
 
 #include <libdark/sigma/ast_parser.hpp>
+#include <libdark/sigma/check_rules.hpp>
 #include <libdark/sigma/variables_map.hpp>
 
 void print_ast(libdark::ast_node_ptr node, size_t indent=0)
@@ -76,6 +77,19 @@ int main(int argc, char** argv)
     const auto& G = *variables["G"].point();
     const auto& d = *variables["d"].scalar();
     variables["Q"] = d * G;
+
+    const auto flat = libdark::flatten_tree(root);
+    for (const auto node: flat)
+    {
+        const auto ec = check_rules(node, variables);
+        if (ec)
+        {
+            std::cerr << "Error validating fragment: "
+                << ec.message() << std::endl;
+            print_ast(node);
+            return -1;
+        }
+    }
 
     return 0;
 }
