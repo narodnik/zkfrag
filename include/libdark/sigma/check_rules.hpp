@@ -1,5 +1,5 @@
-#ifndef LIBDARK_CHECK_RULES
-#define LIBDARK_CHECK_RULES
+#ifndef LIBDARK_SIGMA_CHECK_RULES_HPP
+#define LIBDARK_SIGMA_CHECK_RULES_HPP
 
 #include <libdark/error.hpp>
 #include <libdark/sigma/ast_node.hpp>

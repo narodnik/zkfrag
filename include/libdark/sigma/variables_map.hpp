@@ -1,5 +1,5 @@
-#ifndef LIBDARK_VARIABLES_MAP
-#define LIBDARK_VARIABLES_MAP
+#ifndef LIBDARK_SIGMA_VARIABLES_MAP_HPP
+#define LIBDARK_SIGMA_VARIABLES_MAP_HPP
 
 #include <unordered_map>
 #include <bitcoin/bitcoin.hpp>

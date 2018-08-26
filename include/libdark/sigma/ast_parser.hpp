@@ -1,5 +1,5 @@
-#ifndef LIBDARK_PARSER_HPP
-#define LIBDARK_PARSER_HPP
+#ifndef LIBDARK_SIGMA_AST_PARSER_HPP
+#define LIBDARK_SIGMA_AST_PARSER_HPP
 
 #include <iostream>
 #include "ast_node.hpp"

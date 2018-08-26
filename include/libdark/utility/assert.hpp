@@ -1,5 +1,5 @@
-#ifndef LIBDARK_ASSERT
-#define LIBDARK_ASSERT
+#ifndef LIBDARK_UTILITY_ASSERT_HPP
+#define LIBDARK_UTILITY_ASSERT_HPP
 
 #ifdef NDEBUG
     #define DARK_ASSERT(expression)

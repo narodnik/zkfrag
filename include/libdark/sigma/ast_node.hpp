@@ -1,5 +1,5 @@
-#ifndef LIBDARK_AST_NODE_HPP
-#define LIBDARK_AST_NODE_HPP
+#ifndef LIBDARK_SIGMA_AST_NODE_HPP
+#define LIBDARK_SIGMA_AST_NODE_HPP
 
 #include <list>
 #include <memory>
