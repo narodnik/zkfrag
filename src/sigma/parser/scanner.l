@@ -1,6 +1,7 @@
 %{
     #include <iostream>
     #include <cstdlib>
+    #include "../ast_parser_driver.hpp"
     #include "../scanner.hpp"
     #include <libdark/sigma/ast_parser.hpp>
     #include "parser.hpp"

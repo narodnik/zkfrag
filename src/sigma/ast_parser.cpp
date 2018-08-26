@@ -1,5 +1,6 @@
 #include <libdark/sigma/ast_parser.hpp>
 
+#include "parser/ast_parser_driver.hpp"
 #include "parser/scanner.hpp"
 #include "parser/generated/parser.hpp"
 
@@ -28,16 +29,6 @@ ast_node_ptr ast_parser::parse(std::istream& stream)
 const ast_parser_error ast_parser::error() const
 {
     return error_;
-}
-
-void ast_parser_driver::increase_location(unsigned int distance)
-{
-    location_ += distance;
-}
-
-unsigned int ast_parser_driver::location() const
-{
-    return location_;
 }
 
 } // namespace libdark

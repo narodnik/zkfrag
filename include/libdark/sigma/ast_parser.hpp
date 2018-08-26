@@ -2,7 +2,7 @@
 #define LIBDARK_SIGMA_AST_PARSER_HPP
 
 #include <iostream>
-#include "ast_node.hpp"
+#include <libdark/sigma/ast_node.hpp>
 
 namespace libdark {
 
@@ -21,21 +21,6 @@ public:
 
 private:
     ast_parser_error error_;
-};
-
-class ast_parser_driver
-{
-public:
-    void increase_location(unsigned int distance);
-    
-    unsigned int location() const;
-
-    ast_node_ptr root;
-
-    std::string error_message;
-
-private:
-    unsigned int location_ = 0;
 };
 
 } // namespace libdark

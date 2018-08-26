@@ -26,6 +26,7 @@
 // limit symbol visibility for the linker to avoid potential linking conflicts.
 %code top
 {
+    #include "../ast_parser_driver.hpp"
     #include "../scanner.hpp"
     #include "parser.hpp"
     #include <libdark/sigma/ast_parser.hpp>
