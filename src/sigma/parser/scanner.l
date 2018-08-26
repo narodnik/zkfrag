@@ -62,6 +62,10 @@
             return libdark::bison_parser::make_PLUS(
                 libdark::location());
         }
+\-      {
+            return libdark::bison_parser::make_MINUS(
+                libdark::location());
+        }
 private {
             return libdark::bison_parser::make_PRIVATE(
                 libdark::location());

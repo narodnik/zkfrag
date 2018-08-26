@@ -46,7 +46,32 @@ bool correct_children(
             return false;
         for (const auto child: node->children)
             if (child->type != ast_type::multiply &&
+                child->type != ast_type::negative &&
                 child->type != ast_type::variable)
+            {
+                return false;
+            }
+        return true;
+    }
+    else if (node->type == ast_type::negative)
+    {
+        if (node->children.size() != 1)
+            return false;
+        const auto child = node->children.front();
+        if (child->type != ast_type::multiply &&
+            child->type != ast_type::variable)
+        {
+            return false;
+        }
+        return true;
+    }
+    else if (node->type == ast_type::multiply)
+    {
+        if (node->children.size() != 2)
+            return false;
+        for (const auto child: node->children)
+            if (child->type != ast_type::variable &&
+                child->type != ast_type::number)
             {
                 return false;
             }

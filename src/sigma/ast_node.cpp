@@ -44,6 +44,8 @@ std::string ast_type_to_string(const ast_type type)
         return "sum";
     case ast_type::multiply:
         return "multiply";
+    case ast_type::negative:
+        return "negative";
     case ast_type::number:
         return "number";
     }

@@ -65,6 +65,7 @@
 %token EQUAL "equal"
 %token MULTIPLY "multiply"
 %token PLUS "plus"
+%token MINUS "minus"
 %token PRIVATE "private"
 %token PROVE "prove"
 %token LESS_EQ "less_eq"
@@ -277,6 +278,14 @@ expression:
     expression PLUS item
     {
         $1->children.push_back($3);
+        $$ = std::move($1);
+    }
+    | expression MINUS item
+    {
+        auto negative = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::negative);
+        negative->children.push_back($3);
+        $1->children.push_back(negative);
         $$ = std::move($1);
     }
     | item

@@ -30,6 +30,7 @@ enum class ast_type
     sum,
     multiply,
     variable,
+    negative,
     number
 };
 
