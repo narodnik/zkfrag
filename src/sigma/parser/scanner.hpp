@@ -1,5 +1,5 @@
-#ifndef SCANNER_H
-#define SCANNER_H
+#ifndef SIGMA_PARSER_SCANNER_HPP
+#define SIGMA_PARSER_SCANNER_HPP
 
 
 /**
@@ -41,7 +41,7 @@ class flex_scanner
 public:
     flex_scanner(ast_parser_driver &driver) : driver_(driver) {}
     virtual ~flex_scanner() {}
-    virtual libdark::bison_parser::symbol_type get_next_token();
+    virtual bison_parser::symbol_type get_next_token();
         
 private:
     ast_parser_driver &driver_;
