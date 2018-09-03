@@ -27,24 +27,25 @@
     libdark::flex_scanner::get_next_token()
 
 // this is needed for symbol_type
+#include <libdark/sigma/sigma_ast_node.hpp>
+#include "../sigma_ast_driver.hpp"
 #include "generated/parser.hpp"
 
 namespace libdark {
 
 // Forward declare interpreter to avoid include.
 // Header is added in implementation file.
-class ast_parser_driver;
     
 class flex_scanner
  : public yyFlexLexer
 {
 public:
-    flex_scanner(ast_parser_driver &driver) : driver_(driver) {}
+    flex_scanner(sigma_ast_driver& driver) : driver_(driver) {}
     virtual ~flex_scanner() {}
-    virtual bison_parser::symbol_type get_next_token();
+    virtual libdark::bison_parser::symbol_type get_next_token();
         
 private:
-    ast_parser_driver &driver_;
+    sigma_ast_driver& driver_;
 };
 
 }

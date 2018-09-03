@@ -4,7 +4,7 @@
 #include <string>
 #include <libdark.hpp>
 
-void print_ast(libdark::ast_node_ptr node, size_t indent=0)
+void print_ast(libdark::sigma_ast_node::ptr node, size_t indent=0)
 {
     std::cout << std::string(indent, ' ')
         << libdark::ast_type_to_string(node->type);
@@ -53,7 +53,7 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    libdark::ast_parser parser;
+    libdark::sigma_ast_parser parser;
     auto root = parser.parse(file);
 
     if (!root)

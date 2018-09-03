@@ -1,18 +1,17 @@
-#ifndef LIBDARK_SIGMA_AST_PARSER_DRIVER_HPP
-#define LIBDARK_SIGMA_AST_PARSER_DRIVER_HPP
-
-#include <libdark/sigma/ast_node.hpp>
+#ifndef LIBDARK_PARSER_AST_DRIVER_HPP
+#define LIBDARK_PARSER_AST_DRIVER_HPP
 
 namespace libdark {
 
-class ast_parser_driver
+template <typename AstNodePtr>
+class ast_driver
 {
 public:
     void increase_location(unsigned int distance);
     
     unsigned int location() const;
 
-    ast_node_ptr root;
+    AstNodePtr root;
 
     std::string error_message;
 
@@ -21,6 +20,8 @@ private:
 };
 
 } // namespace libdark
+
+#include <libdark/impl/parser/ast_driver.ipp>
 
 #endif
 

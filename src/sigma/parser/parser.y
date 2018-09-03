@@ -10,11 +10,11 @@
 %code requires
 {
     #include <string>
-    #include <libdark/sigma/ast_node.hpp>
+    #include "../../sigma_ast_driver.hpp"
+    #include <libdark/sigma/sigma_ast_node.hpp>
 
     namespace libdark {
         class flex_scanner;
-        class ast_parser_driver;
     }
 }
 
@@ -26,21 +26,21 @@
 // limit symbol visibility for the linker to avoid potential linking conflicts.
 %code top
 {
-    #include "../ast_parser_driver.hpp"
     #include "../scanner.hpp"
     #include "parser.hpp"
-    #include <libdark/sigma/ast_parser.hpp>
+    #include <libdark/sigma/sigma_ast_parser.hpp>
     #include "location.hh"
     
     // yylex() arguments are defined in parser.y
     static libdark::bison_parser::symbol_type yylex(
-        libdark::flex_scanner &scanner, libdark::ast_parser_driver &driver)
+        libdark::flex_scanner &scanner,
+        libdark::sigma_ast_driver &driver)
     {
         return scanner.get_next_token();
     }
     
-    // you can accomplish the same thing by inlining the code using preprocessor
-    // x and y are same as in above static function
+    // you can accomplish the same thing by inlining the code using
+    // preprocessor x and y are same as in above static function
     // #define yylex(x, y) scanner.get_next_token()
 }
 
@@ -48,10 +48,10 @@
 // Also output the header too
 %defines "src/sigma/parser/generated/parser.hpp"
 
-%lex-param { libdark::flex_scanner &scanner }
-%lex-param { libdark::ast_parser_driver &driver }
-%parse-param { libdark::flex_scanner &scanner }
-%parse-param { libdark::ast_parser_driver &driver }
+%lex-param { libdark::flex_scanner& scanner }
+%lex-param { libdark::sigma_ast_driver& driver }
+%parse-param { libdark::flex_scanner& scanner }
+%parse-param { libdark::sigma_ast_driver& driver }
 %locations
 %define parse.trace
 %define parse.error verbose
@@ -84,7 +84,7 @@
 %token <std::string> NUMBER "number";
 %token <std::string> TOKEN "token";
 
-%type < libdark::ast_node_ptr > program header version_number
+%type < libdark::sigma_ast_node::ptr > program header version_number
     private private_value prove statement
     represent linear_equation range_proof any all
     equality_expression range_expression expression item
@@ -97,7 +97,8 @@
 program:
 	header private prove
     {
-        $$ = std::make_shared<libdark::ast_node>(libdark::ast_type::root);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::root);
         $$->children.push_back($1);
         $$->children.push_back($2);
         $$->children.push_back($3);
@@ -117,8 +118,8 @@ version_number:
         std::string version = $1;
         version += ".";
         version += $3;
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::version, version);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::version, version);
     }
     | NUMBER DOT NUMBER DOT NUMBER
     {
@@ -127,8 +128,8 @@ version_number:
         version += $3;
         version += ".";
         version += $5;
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::version, version);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::version, version);
     }
 
 private:
@@ -145,30 +146,30 @@ private_values:
     }
     | private_value
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::private_section);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::private_section);
         $$->children.push_back($1);
     }
     ;
 private_value:
     TOKEN
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::private_value, $1);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::private_value, $1);
     }
     ;
 
 prove:
     PROVE COLON statements
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::prove_section, $3->value);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::prove_section, $3->value);
         $$->children = std::move($3->children);
     }
     | PROVE COLON
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::prove_section);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::prove_section);
     }
     ;
 statements:
@@ -179,8 +180,8 @@ statements:
     }
     | statement
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::template_);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::template_);
         $$->children.push_back($1);
     }
     ;
@@ -210,8 +211,8 @@ statement:
 represent:
     REPRESENT L_BRACKET equality_expression R_BRACKET
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::represent);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::represent);
         $$->children.push_back($3);
     }
     ;
@@ -219,8 +220,8 @@ represent:
 linear_equation:
     LINEAR_EQUATION L_BRACKET equality_expression R_BRACKET
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::linear_equation);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::linear_equation);
         $$->children.push_back($3);
     }
     ;
@@ -228,8 +229,8 @@ linear_equation:
 range_proof:
     RANGE_PROOF L_BRACKET range_expression R_BRACKET
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::range_proof);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::range_proof);
         $$->children.push_back($3);
     }
     ;
@@ -237,8 +238,8 @@ range_proof:
 equality_expression:
     expression EQUAL expression
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::equal);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::equal);
         $$->children.push_back($1);
         $$->children.push_back($3);
     }
@@ -247,29 +248,29 @@ equality_expression:
 range_expression:
     expression LESS_EQ expression
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::less_equal);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::less_equal);
         $$->children.push_back($1);
         $$->children.push_back($3);
     }
     | expression GREATER_EQ expression
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::greater_equal);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::greater_equal);
         $$->children.push_back($1);
         $$->children.push_back($3);
     }
     | expression LESS expression
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::less);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::less);
         $$->children.push_back($1);
         $$->children.push_back($3);
     }
     | expression GREATER expression
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::greater);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::greater);
         $$->children.push_back($1);
         $$->children.push_back($3);
     }
@@ -283,16 +284,16 @@ expression:
     }
     | expression MINUS item
     {
-        auto negative = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::negative);
+        auto negative = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::negative);
         negative->children.push_back($3);
         $1->children.push_back(negative);
         $$ = std::move($1);
     }
     | item
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::sum);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::sum);
         $$->children.push_back($1);
     }
     ;
@@ -300,54 +301,54 @@ expression:
 item:
     TOKEN TOKEN
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::multiply);
-        auto value_1 = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::variable, $1);
-        auto value_2 = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::variable, $2);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::multiply);
+        auto value_1 = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::variable, $1);
+        auto value_2 = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::variable, $2);
         $$->children.push_back(value_1);
         $$->children.push_back(value_2);
     }
     | TOKEN MULTIPLY TOKEN
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::multiply);
-        auto value_1 = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::variable, $1);
-        auto value_2 = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::variable, $3);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::multiply);
+        auto value_1 = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::variable, $1);
+        auto value_2 = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::variable, $3);
         $$->children.push_back(value_1);
         $$->children.push_back(value_2);
     }
     | TOKEN
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::variable, $1);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::variable, $1);
     }
     | NUMBER TOKEN
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::multiply);
-        auto value_1 = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::number, $1);
-        auto value_2 = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::variable, $2);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::multiply);
+        auto value_1 = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::number, $1);
+        auto value_2 = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::variable, $2);
         $$->children.push_back(value_1);
         $$->children.push_back(value_2);
     }
     | NUMBER
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::number, $1);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::number, $1);
     }
     ;
 
 any:
     ANY L_BRACKET statements R_BRACKET
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::any, $3->value);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::any, $3->value);
         $$->children = std::move($3->children);
     }
     ;
@@ -355,8 +356,8 @@ any:
 all:
     ALL L_BRACKET statements R_BRACKET
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::all, $3->value);
+        $$ = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::all, $3->value);
         $$->children = std::move($3->children);
     }
     ;

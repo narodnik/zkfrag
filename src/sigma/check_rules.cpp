@@ -4,11 +4,11 @@
 
 namespace libdark {
 
-bool variable_listed(
-    const libdark::ast_node_ptr node, const libdark::variables_map variables)
+bool variable_listed(const libdark::sigma_ast_node::ptr node,
+    const libdark::variables_map variables)
 {
-    if (node->type != ast_type::variable &&
-        node->type != ast_type::private_value)
+    if (node->type != sigma_ast_type::variable &&
+        node->type != sigma_ast_type::private_value)
     {
         return true;
     }
@@ -19,59 +19,59 @@ bool variable_listed(
     return true;
 }
 
-bool correct_children(
-    const libdark::ast_node_ptr node, const libdark::variables_map variables)
+bool correct_children(const libdark::sigma_ast_node::ptr node,
+    const libdark::variables_map variables)
 {
-    if (node->type == ast_type::represent)
+    if (node->type == sigma_ast_type::represent)
     {
         if (node->children.size() != 1)
             return false;
         const auto child = node->children.front();
-        if (child->type != ast_type::equal)
+        if (child->type != sigma_ast_type::equal)
             return false;
         return true;
     }
-    else if (node->type == ast_type::equal)
+    else if (node->type == sigma_ast_type::equal)
     {
         if (node->children.size() != 2)
             return false;
         for (const auto child: node->children)
-            if (child->type != ast_type::sum)
+            if (child->type != sigma_ast_type::sum)
                 return false;
         return true;
     }
-    else if (node->type == ast_type::sum)
+    else if (node->type == sigma_ast_type::sum)
     {
         if (node->children.empty())
             return false;
         for (const auto child: node->children)
-            if (child->type != ast_type::multiply &&
-                child->type != ast_type::negative &&
-                child->type != ast_type::variable)
+            if (child->type != sigma_ast_type::multiply &&
+                child->type != sigma_ast_type::negative &&
+                child->type != sigma_ast_type::variable)
             {
                 return false;
             }
         return true;
     }
-    else if (node->type == ast_type::negative)
+    else if (node->type == sigma_ast_type::negative)
     {
         if (node->children.size() != 1)
             return false;
         const auto child = node->children.front();
-        if (child->type != ast_type::multiply &&
-            child->type != ast_type::variable)
+        if (child->type != sigma_ast_type::multiply &&
+            child->type != sigma_ast_type::variable)
         {
             return false;
         }
         return true;
     }
-    else if (node->type == ast_type::multiply)
+    else if (node->type == sigma_ast_type::multiply)
     {
         if (node->children.size() != 2)
             return false;
         for (const auto child: node->children)
-            if (child->type != ast_type::variable &&
-                child->type != ast_type::number)
+            if (child->type != sigma_ast_type::variable &&
+                child->type != sigma_ast_type::number)
             {
                 return false;
             }
@@ -80,10 +80,10 @@ bool correct_children(
     return true;
 }
 
-bool scalar_by_point(
-    const libdark::ast_node_ptr node, const libdark::variables_map variables)
+bool scalar_by_point(const libdark::sigma_ast_node::ptr node,
+    const libdark::variables_map variables)
 {
-    if (node->type != ast_type::multiply)
+    if (node->type != sigma_ast_type::multiply)
         return true;
 
     DARK_ASSERT(node->children.size() == 2);
@@ -108,10 +108,10 @@ bool scalar_by_point(
     return true;
 }
 
-bool private_is_scalar(
-    const libdark::ast_node_ptr node, const libdark::variables_map variables)
+bool private_is_scalar(const libdark::sigma_ast_node::ptr node,
+    const libdark::variables_map variables)
 {
-    if (node->type != ast_type::private_value)
+    if (node->type != sigma_ast_type::private_value)
         return true;
 
     const auto iterator = variables.find(node->value);
@@ -123,10 +123,10 @@ bool private_is_scalar(
     return true;
 }
 
-rules_error_result check_rules(
-    const libdark::ast_node_ptr root, const libdark::variables_map variables)
+rules_error_result check_rules(const libdark::sigma_ast_node::ptr root,
+    const libdark::variables_map variables)
 {
-    const auto flat = libdark::flatten_tree(root);
+    const auto flat = libdark::flatten_tree<sigma_ast_node>(root);
 
     // All variables are listed
     for (const auto node: flat)

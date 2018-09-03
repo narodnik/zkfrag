@@ -1,16 +1,15 @@
-#include <libdark/sigma/ast_parser.hpp>
-
-#include "parser/ast_parser_driver.hpp"
-#include "parser/scanner.hpp"
-#include "parser/generated/parser.hpp"
+#ifndef LIBDARK_PARSER_AST_PARSER_IPP
+#define LIBDARK_PARSER_AST_PARSER_IPP
 
 namespace libdark {
 
-ast_node_ptr ast_parser::parse(std::istream& stream)
+template <typename Driver, typename Scanner,
+    typename Parser, typename AstNodePtr>
+AstNodePtr ast_parser_base::parse(std::istream& stream)
 {
-    ast_parser_driver driver;
-    flex_scanner scanner(driver);
-    bison_parser parser(scanner, driver);
+    Driver driver;
+    Scanner scanner(driver);
+    Parser parser(scanner, driver);
 
     scanner.switch_streams(&stream, nullptr);
     int rc = parser.parse();
@@ -26,10 +25,7 @@ ast_node_ptr ast_parser::parse(std::istream& stream)
     return driver.root;
 }
 
-const ast_parser_error ast_parser::error() const
-{
-    return error_;
-}
-
 } // namespace libdark
+
+#endif
 
