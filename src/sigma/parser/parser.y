@@ -88,8 +88,9 @@
     private private_value prove statement
     represent linear_equation range_proof any all
     equality_expression range_expression expression item
+    private_values
 
-%type < libdark::ast_node_list > private_values statements
+%type < libdark::ast_node_list > statements
 
 %start program
 
@@ -135,20 +136,20 @@ version_number:
 private:
     PRIVATE COLON private_values
     {
-        $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::private_section);
-        $$->children = std::move($3);
+        $$ = std::move($3);
     }
     ;
 private_values:
     private_values COMMA private_value
     {
-        $1.push_back($3);
+        $1->children.push_back($3);
         $$ = std::move($1);
     }
     | private_value
     {
-        $$.push_back($1);
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::private_section);
+        $$->children.push_back($1);
     }
     ;
 private_value:
