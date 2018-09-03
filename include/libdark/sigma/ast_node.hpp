@@ -12,6 +12,7 @@ typedef std::list<ast_node_ptr> ast_node_list;
 
 enum class ast_type
 {
+    template_,
     root,
     version,
     private_section,

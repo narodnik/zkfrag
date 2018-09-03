@@ -88,9 +88,7 @@
     private private_value prove statement
     represent linear_equation range_proof any all
     equality_expression range_expression expression item
-    private_values
-
-%type < libdark::ast_node_list > statements
+    private_values statements
 
 %start program
 
@@ -164,8 +162,8 @@ prove:
     PROVE COLON statements
     {
         $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::prove_section);
-        $$->children = std::move($3);
+            libdark::ast_type::prove_section, $3->value);
+        $$->children = std::move($3->children);
     }
     | PROVE COLON
     {
@@ -176,12 +174,14 @@ prove:
 statements:
     statements COMMA statement
     {
-        $1.push_back($3);
+        $1->children.push_back($3);
         $$ = std::move($1);
     }
     | statement
     {
-        $$.push_back($1);
+        $$ = std::make_shared<libdark::ast_node>(
+            libdark::ast_type::template_);
+        $$->children.push_back($1);
     }
     ;
 statement:
@@ -347,8 +347,8 @@ any:
     ANY L_BRACKET statements R_BRACKET
     {
         $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::any);
-        $$->children = std::move($3);
+            libdark::ast_type::any, $3->value);
+        $$->children = std::move($3->children);
     }
     ;
 
@@ -356,8 +356,8 @@ all:
     ALL L_BRACKET statements R_BRACKET
     {
         $$ = std::make_shared<libdark::ast_node>(
-            libdark::ast_type::all);
-        $$->children = std::move($3);
+            libdark::ast_type::all, $3->value);
+        $$->children = std::move($3->children);
     }
     ;
     
