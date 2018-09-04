@@ -23,8 +23,8 @@
 // Since Bison 3 uses symbol_type, we must change returned type.
 // We also rename it to something sane, since you cannot overload return type.
 #undef YY_DECL
-#define YY_DECL libdark::bison_parser::symbol_type \
-    libdark::flex_scanner::get_next_token()
+#define YY_DECL libdark::sigma_bison_parser::symbol_type \
+    libdark::sigma_flex_scanner::get_next_token()
 
 // this is needed for symbol_type
 #include <libdark/sigma/sigma_ast_node.hpp>
@@ -36,13 +36,13 @@ namespace libdark {
 // Forward declare interpreter to avoid include.
 // Header is added in implementation file.
     
-class flex_scanner
+class sigma_flex_scanner
  : public yyFlexLexer
 {
 public:
-    flex_scanner(sigma_ast_driver& driver) : driver_(driver) {}
-    virtual ~flex_scanner() {}
-    virtual libdark::bison_parser::symbol_type get_next_token();
+    sigma_flex_scanner(sigma_ast_driver& driver) : driver_(driver) {}
+    virtual ~sigma_flex_scanner() {}
+    virtual libdark::sigma_bison_parser::symbol_type get_next_token();
         
 private:
     sigma_ast_driver& driver_;

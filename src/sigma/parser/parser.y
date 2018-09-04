@@ -1,7 +1,7 @@
 %skeleton "lalr1.cc" /* -*- C++ -*- */
 %require "3.0"
 %defines
-%define parser_class_name { bison_parser }
+%define parser_class_name { sigma_bison_parser }
 
 %define api.token.constructor
 %define api.value.type variant
@@ -14,7 +14,7 @@
     #include <libdark/sigma/sigma_ast_node.hpp>
 
     namespace libdark {
-        class flex_scanner;
+        class sigma_flex_scanner;
     }
 }
 
@@ -32,8 +32,8 @@
     #include "location.hh"
     
     // yylex() arguments are defined in parser.y
-    static libdark::bison_parser::symbol_type yylex(
-        libdark::flex_scanner &scanner,
+    static libdark::sigma_bison_parser::symbol_type yylex(
+        libdark::sigma_flex_scanner &scanner,
         libdark::sigma_ast_driver &driver)
     {
         return scanner.get_next_token();
@@ -48,9 +48,9 @@
 // Also output the header too
 %defines "src/sigma/parser/generated/parser.hpp"
 
-%lex-param { libdark::flex_scanner& scanner }
+%lex-param { libdark::sigma_flex_scanner& scanner }
 %lex-param { libdark::sigma_ast_driver& driver }
-%parse-param { libdark::flex_scanner& scanner }
+%parse-param { libdark::sigma_flex_scanner& scanner }
 %parse-param { libdark::sigma_ast_driver& driver }
 %locations
 %define parse.trace
@@ -365,7 +365,7 @@ all:
 %%
 
 // Bison expects us to provide implementation - otherwise linker complains
-void libdark::bison_parser::error(
+void libdark::sigma_bison_parser::error(
     const location &loc , const std::string &message)
 {
     driver.error_message = message;

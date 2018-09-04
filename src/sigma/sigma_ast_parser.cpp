@@ -9,8 +9,8 @@ namespace libdark {
 sigma_ast_node::ptr sigma_ast_parser::parse(std::istream& stream)
 {
     return ast_parser_base::parse<
-        sigma_ast_driver, flex_scanner,
-        bison_parser, sigma_ast_node::ptr>(stream);
+        sigma_ast_driver, sigma_flex_scanner,
+        sigma_bison_parser, sigma_ast_node::ptr>(stream);
 }
 
 } // namespace libdark

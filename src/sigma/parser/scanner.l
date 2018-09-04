@@ -9,8 +9,8 @@
     
     // Original yyterminate() macro returns int. Since we're using
     // Bison 3 variants as tokens, we must redefine it to change type
-    // from `int` to `bison_parser::semantic_type`
-    #define yyterminate() libdark::bison_parser::make_END(libdark::location());
+    // from `int` to `sigma_bison_parser::semantic_type`
+    #define yyterminate() libdark::sigma_bison_parser::make_END(libdark::location());
     
     // This will track current scanner location.
     // Action is called when length of the token is known.
@@ -20,102 +20,102 @@
 %option nodefault
 %option noyywrap
 %option c++
-%option yyclass="flex_scanner"
+%option yyclass="sigma_flex_scanner"
 %option prefix="libdark_"
 %option outfile="src/sigma/parser/generated/scanner.cpp" header-file="src/sigma/parser/generated/scanner.hpp"
 
 %%
 [ \t\n] ;
 ,       {
-            return libdark::bison_parser::make_COMMA(
+            return libdark::sigma_bison_parser::make_COMMA(
                 libdark::location());
         }
 :       {
-            return libdark::bison_parser::make_COLON(
+            return libdark::sigma_bison_parser::make_COLON(
                 libdark::location());
         }
 \<=     {
-            return libdark::bison_parser::make_LESS_EQ(
+            return libdark::sigma_bison_parser::make_LESS_EQ(
                 libdark::location());
         }
 \>=     {
-            return libdark::bison_parser::make_GREATER_EQ(
+            return libdark::sigma_bison_parser::make_GREATER_EQ(
                 libdark::location());
         }
 \<      {
-            return libdark::bison_parser::make_LESS(
+            return libdark::sigma_bison_parser::make_LESS(
                 libdark::location());
         }
 \>      {
-            return libdark::bison_parser::make_GREATER(
+            return libdark::sigma_bison_parser::make_GREATER(
                 libdark::location());
         }
 =       {
-            return libdark::bison_parser::make_EQUAL(
+            return libdark::sigma_bison_parser::make_EQUAL(
                 libdark::location());
         }
 \*      {
-            return libdark::bison_parser::make_MULTIPLY(
+            return libdark::sigma_bison_parser::make_MULTIPLY(
                 libdark::location());
         }
 \+      {
-            return libdark::bison_parser::make_PLUS(
+            return libdark::sigma_bison_parser::make_PLUS(
                 libdark::location());
         }
 \-      {
-            return libdark::bison_parser::make_MINUS(
+            return libdark::sigma_bison_parser::make_MINUS(
                 libdark::location());
         }
 private {
-            return libdark::bison_parser::make_PRIVATE(
+            return libdark::sigma_bison_parser::make_PRIVATE(
                 libdark::location());
         }
 prove   {
-            return libdark::bison_parser::make_PROVE(
+            return libdark::sigma_bison_parser::make_PROVE(
                 libdark::location());
         }
 \(      {
-            return libdark::bison_parser::make_L_BRACKET(
+            return libdark::sigma_bison_parser::make_L_BRACKET(
                 libdark::location());
         }
 \)      {
-            return libdark::bison_parser::make_R_BRACKET(
+            return libdark::sigma_bison_parser::make_R_BRACKET(
                 libdark::location());
         }
 represent {
-            return libdark::bison_parser::make_REPRESENT(
+            return libdark::sigma_bison_parser::make_REPRESENT(
                 libdark::location());
         }
 linear_equation {
-            return libdark::bison_parser::make_LINEAR_EQUATION(
+            return libdark::sigma_bison_parser::make_LINEAR_EQUATION(
                 libdark::location());
         }
 range_proof {
-            return libdark::bison_parser::make_RANGE_PROOF(
+            return libdark::sigma_bison_parser::make_RANGE_PROOF(
                 libdark::location());
         }
 any     {
-            return libdark::bison_parser::make_ANY(
+            return libdark::sigma_bison_parser::make_ANY(
                 libdark::location());
         }
 all     {
-            return libdark::bison_parser::make_ALL(
+            return libdark::sigma_bison_parser::make_ALL(
                 libdark::location());
         }
 version {
-            return libdark::bison_parser::make_VERSION(
+            return libdark::sigma_bison_parser::make_VERSION(
                 libdark::location());
         }
 \.      {
-            return libdark::bison_parser::make_DOT(
+            return libdark::sigma_bison_parser::make_DOT(
                 libdark::location());
         }
 [0-9]+  {
-            return libdark::bison_parser::make_NUMBER(
+            return libdark::sigma_bison_parser::make_NUMBER(
                 yytext, libdark::location()); 
         }
 [a-zA-Z]+[a-zA-Z0-9_]*  {
-            return libdark::bison_parser::make_TOKEN(
+            return libdark::sigma_bison_parser::make_TOKEN(
                 yytext, libdark::location()); 
         }
 .       ;
