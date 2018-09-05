@@ -103,23 +103,8 @@ def parse_subgrammar(sub_grammar):
     print()
 
 def parse_grammars(grammars):
-    parse_grammar(grammars[0])
-    parse_grammar(grammars[1])
-    parse_grammar(grammars[2])
-    parse_grammar(grammars[3])
-    parse_grammar(grammars[4])
-    parse_grammar(grammars[5])
-    parse_grammar(grammars[6])
-    parse_grammar(grammars[7])
-    parse_grammar(grammars[8])
-    parse_grammar(grammars[9])
-    parse_grammar(grammars[10])
-    parse_grammar(grammars[11])
-    parse_grammar(grammars[12])
-    parse_grammar(grammars[13])
-    parse_grammar(grammars[14])
-    parse_grammar(grammars[15])
-    parse_grammar(grammars[16])
+    for grammar in grammars:
+        parse_grammar(grammar)
 
 def parse_code(code):
     for expr in code:
