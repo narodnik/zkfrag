@@ -52,6 +52,7 @@ json_parser = Lark(r"""
 
     """, start='program')
 
+import compiler
 import random
 import string
 
@@ -82,13 +83,16 @@ def parse_tokens(tokens):
     return result
 
 def parse_grammar(grammar):
-    name = grammar.children[0]
-    print("************************")
-    print("Name:", name)
-    print("************************")
-    print(grammar.pretty())
+    name = str(grammar.children[0])
+    #print("************************")
+    #print("Name:", name)
+    #print("************************")
+    #print(grammar.pretty())
+    subs = []
     for sub_grammar in grammar.children[1:]:
-        parse_subgrammar(sub_grammar)
+        sub = parse_subgrammar(sub_grammar)
+        subs.append(sub)
+    return (name, subs)
 
 def parse_subgrammar(sub_grammar):
     assert sub_grammar.data == "sub_grammar"
@@ -96,20 +100,29 @@ def parse_subgrammar(sub_grammar):
     rules = []
     for rule in rules_tree[:-1]:
         rules.append(str(rule))
-    print("Rules:", rules)
+    #print("Rules:", rules)
+
     code = rules_tree[-1].children
-    print("Code:", code)
-    parse_code(code)
-    print()
+    stack = parse_code(code)
+
+    #print("Stack:")
+    #for item in stack:
+    #    print(item)
+    #print()
+    return (rules, stack)
 
 def parse_grammars(grammars):
+    result = []
     for grammar in grammars:
-        parse_grammar(grammar)
+        grammar = parse_grammar(grammar)
+        result.append(grammar)
+    return result
 
 def parse_code(code):
+    stack = []
     for expr in code:
-        stack = []
         parse_expr(expr, stack)
+    return stack
 
 def parse_expr(expr, stack):
     if type(expr) == Token:
@@ -117,7 +130,8 @@ def parse_expr(expr, stack):
     elif expr.data == "return":
         assert len(expr.children) == 1
         varname = parse_expr(expr.children[0], stack)
-        print("Return", varname)
+        #print("Return", varname)
+        stack.append(("return", varname))
     elif expr.data == "init":
         varname = random_variable_name()
         parse_init(varname, expr.children, stack)
@@ -126,13 +140,15 @@ def parse_expr(expr, stack):
         assert len(expr.children) == 2
         value_1 = str(expr.children[0])
         value_2 = str(expr.children[1])
-        print("Add:", value_1, value_2)
+        #print("Add:", value_1, value_2)
+        stack.append(("add", (value_1, value_2)))
         return value_1
     elif expr.data == "assign":
         assert len(expr.children) == 2
         value_1 = str(expr.children[0])
         varname = parse_expr(expr.children[1], stack)
-        print("Assign:", value_1, "=", varname)
+        #print("Assign:", value_1, "=", varname)
+        stack.append(("assign", (value_1, varname)))
 
 def parse_init(varname, init, stack):
     assert init[0].data == "init_type"
@@ -150,29 +166,35 @@ def parse_init(varname, init, stack):
             for child in opts.children:
                 child_name = parse_expr(child, stack)
                 init_children.append(child_name)
-    if init_inherit is None:
-        print("Init:", varname, "=", init_type, init_data, init_children)
-    else:
-        print("Init:", varname, "=", init_type, "<-", init_inherit)
+    #if init_inherit is None:
+    #    print("Init:", varname, "=", init_type, init_data, init_children)
+    #else:
+    #    print("Init:", varname, "=", init_type, "<-", init_inherit)
+    stack.append(("init", (varname, init_type, init_data,
+                           init_inherit, init_children)))
 
 def main():
     text = open("grammer.y").read()
 
     result = json_parser.parse(text)
-    print(result.pretty())
-    print()
+    #print(result.pretty())
+    #print()
     assert result.data == "program"
     for child in result.children:
         if child.data == "options":
             options = parse_options(child.children)
-            print("Options:", options)
+            #print("Options:", options)
         elif child.data == "tokens":
             tokens = parse_tokens(child.children)
-            for token, cname in tokens:
-                print("Token:", token, "\t", cname)
+            #for token, cname in tokens:
+            #    print("Token:", token, "\t", cname)
         elif child.data == "grammars":
             #print(child.pretty())
-            parse_grammars(child.children)
+            grammars = parse_grammars(child.children)
+
+    output = compiler.Compiler(options, tokens, grammars)
+    import sys
+    output.write(sys.stdout)
 
 if __name__ == "__main__":
     main()
