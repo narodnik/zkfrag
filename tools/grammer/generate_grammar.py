@@ -25,9 +25,10 @@ json_parser = Lark(r"""
     assign : CNAME "=" init
 
     init : "<" init_type ">" (init_data)? (init_children)?
-        | "<" init_type ">" "from" value
+        | "<" init_type ">" init_inherit
     init_type : CNAME
     init_data : ":" PARSER_ARGUMENT
+    init_inherit : "from" value
     init_children : "[" object* ("," object)* "]"
 
     ?object : init | value | add
@@ -81,11 +82,11 @@ def parse_tokens(tokens):
     return result
 
 def parse_grammar(grammar):
-    print("Grammar:", grammar.pretty())
     name = grammar.children[0]
     print("************************")
     print("Name:", name)
     print("************************")
+    print(grammar.pretty())
     for sub_grammar in grammar.children[1:]:
         parse_subgrammar(sub_grammar)
 
@@ -102,9 +103,23 @@ def parse_subgrammar(sub_grammar):
     print()
 
 def parse_grammars(grammars):
-    #parse_grammar(grammars[0])
-    #parse_grammar(grammars[1])
+    parse_grammar(grammars[0])
+    parse_grammar(grammars[1])
     parse_grammar(grammars[2])
+    parse_grammar(grammars[3])
+    parse_grammar(grammars[4])
+    parse_grammar(grammars[5])
+    parse_grammar(grammars[6])
+    parse_grammar(grammars[7])
+    parse_grammar(grammars[8])
+    parse_grammar(grammars[9])
+    parse_grammar(grammars[10])
+    parse_grammar(grammars[11])
+    parse_grammar(grammars[12])
+    parse_grammar(grammars[13])
+    parse_grammar(grammars[14])
+    parse_grammar(grammars[15])
+    parse_grammar(grammars[16])
 
 def parse_code(code):
     for expr in code:
@@ -120,19 +135,40 @@ def parse_expr(expr, stack):
         print("Return", varname)
     elif expr.data == "init":
         varname = random_variable_name()
-        parse_init(varname, expr.children)
+        parse_init(varname, expr.children, stack)
         return varname
+    elif expr.data == "add":
+        assert len(expr.children) == 2
+        value_1 = str(expr.children[0])
+        value_2 = str(expr.children[1])
+        print("Add:", value_1, value_2)
+        return value_1
+    elif expr.data == "assign":
+        assert len(expr.children) == 2
+        value_1 = str(expr.children[0])
+        varname = parse_expr(expr.children[1], stack)
+        print("Assign:", value_1, "=", varname)
 
-def parse_init(varname, init):
+def parse_init(varname, init, stack):
     assert init[0].data == "init_type"
     assert len(init[0].children) == 1
     init_type = str(init[0].children[0])
+    init_data = None
+    init_inherit = None
     init_children = []
     for opts in init[1:]:
-        if opts.data == "init_children":
+        if opts.data == "init_data":
+            init_data = str(opts.children[0])
+        elif opts.data == "init_inherit":
+            init_inherit = str(opts.children[0])
+        elif opts.data == "init_children":
             for child in opts.children:
-                init_children.append(str(child))
-    print("Init:", varname, "=", init_type, init_children)
+                child_name = parse_expr(child, stack)
+                init_children.append(child_name)
+    if init_inherit is None:
+        print("Init:", varname, "=", init_type, init_data, init_children)
+    else:
+        print("Init:", varname, "=", init_type, "<-", init_inherit)
 
 def main():
     text = open("grammer.y").read()
