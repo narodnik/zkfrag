@@ -1,4 +1,5 @@
 from lark import Lark
+from lark.lexer import Token
 
 json_parser = Lark(r"""
 
@@ -19,7 +20,7 @@ json_parser = Lark(r"""
 
     code: expression*
 
-    expression: return | assign | add
+    ?expression: return | assign | add
 
     assign : CNAME "=" init
 
@@ -50,6 +51,12 @@ json_parser = Lark(r"""
 
     """, start='program')
 
+import random
+import string
+
+def random_variable_name():
+    return "_" + "".join(random.choices(string.ascii_uppercase + string.digits,
+                         k=12))
 
 def parse_options(options):
     result = {}
@@ -74,19 +81,58 @@ def parse_tokens(tokens):
     return result
 
 def parse_grammar(grammar):
+    print("Grammar:", grammar.pretty())
     name = grammar.children[0]
+    print("************************")
     print("Name:", name)
-    assert grammar.children[1].data == "sub_grammar"
-    sub_grammars = grammar.children[1].children
-    subs = []
-    for sub_grammar in sub_grammars[:-1]:
-        subs.append(str(sub_grammar))
-    print("Subs:", subs)
-    code = sub_grammars[-1].children
+    print("************************")
+    for sub_grammar in grammar.children[1:]:
+        parse_subgrammar(sub_grammar)
+
+def parse_subgrammar(sub_grammar):
+    assert sub_grammar.data == "sub_grammar"
+    rules_tree = sub_grammar.children
+    rules = []
+    for rule in rules_tree[:-1]:
+        rules.append(str(rule))
+    print("Rules:", rules)
+    code = rules_tree[-1].children
     print("Code:", code)
+    parse_code(code)
+    print()
 
 def parse_grammars(grammars):
-    parse_grammar(grammars[0])
+    #parse_grammar(grammars[0])
+    #parse_grammar(grammars[1])
+    parse_grammar(grammars[2])
+
+def parse_code(code):
+    for expr in code:
+        stack = []
+        parse_expr(expr, stack)
+
+def parse_expr(expr, stack):
+    if type(expr) == Token:
+        return str(expr)
+    elif expr.data == "return":
+        assert len(expr.children) == 1
+        varname = parse_expr(expr.children[0], stack)
+        print("Return", varname)
+    elif expr.data == "init":
+        varname = random_variable_name()
+        parse_init(varname, expr.children)
+        return varname
+
+def parse_init(varname, init):
+    assert init[0].data == "init_type"
+    assert len(init[0].children) == 1
+    init_type = str(init[0].children[0])
+    init_children = []
+    for opts in init[1:]:
+        if opts.data == "init_children":
+            for child in opts.children:
+                init_children.append(str(child))
+    print("Init:", varname, "=", init_type, init_children)
 
 def main():
     text = open("grammer.y").read()
