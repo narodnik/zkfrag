@@ -4,4 +4,6 @@ sigma_ast_node.cpp
 sigma_ast_node.hpp
 sigma_ast_parser.cpp
 sigma_ast_parser.hpp
+parser.y
+scanner.l
 

@@ -26,7 +26,6 @@
 
 %%
 ${flex_tokens}
-.       ;
             
 <<EOF>> {
             return yyterminate();

@@ -123,6 +123,28 @@ class FlexCompiler:
             " " * 12 + "return %s::%s_bison_parser::make_%s(\n" % (
                 self.options["library_name"], self.options["class_prefix"],
                 cname) +
-            " " * 16 + "libdark::location());\n" +
+            " " * 16 + "yytext, libdark::location());\n" +
             " " * 8 + "}\n")
+
+class BisonCompiler:
+
+    def __init__(self, options, tokens, grammars):
+        self.options = options
+        self.tokens = tokens
+        self.grammars = grammars
+
+    def compile_token_list(self):
+        result = ""
+        for _, cname in self.tokens:
+            if cname is None:
+                continue
+            result += '%%token <std::string> %s "%s"\n' % (
+                cname.upper(), cname.lower())
+        return result
+
+    def compile_node_list(self):
+        result = ""
+        for name, _ in self.grammars:
+            result += " " * 4 + name + "\n"
+        return result
 

@@ -78,8 +78,8 @@ def parse_tokens(tokens):
         token = token_pair.children[0]
         cname = None
         if len(token_pair.children) == 2:
-            cname = token_pair.children[1]
-        result.append((str(token), str(cname)))
+            cname = str(token_pair.children[1])
+        result.append((str(token), cname))
     return result
 
 def parse_grammar(grammar):
@@ -192,19 +192,24 @@ def main():
             #print(child.pretty())
             grammars = parse_grammars(child.children)
 
-    output = compiler.CodeCompiler(options, tokens, grammars)
-    grammar_code = output.compile()
-
     template_keys = options.copy()
+
+    output = compiler.CodeCompiler(options, tokens, grammars)
+    template_keys["grammar_code"] = output.compile()
+
     template_keys["HEADER_PREFIX"] = template_keys["header_prefix"].upper()
     template_keys["CLASS_PREFIX"] = template_keys["class_prefix"].upper()
-    template_keys["include_path"] = "libdark/sigma/"
+    template_keys["include_path"] = "libdark/sigma"
 
     template_keys["node_types"] = output.compile_node_types()
     template_keys["ast_type_to_string"] = output.compile_ast_type_to_string()
 
     flex = compiler.FlexCompiler(options, tokens)
     template_keys["flex_tokens"] = flex.compile()
+
+    bison = compiler.BisonCompiler(options, tokens, grammars)
+    template_keys["token_list"] = bison.compile_token_list()
+    template_keys["node_list"] = bison.compile_node_list()
 
     source_files = [
         "sigma_ast_node.cpp",
@@ -213,7 +218,8 @@ def main():
         "sigma_ast_driver.hpp",
         "sigma_ast_node.hpp",
         "sigma_ast_parser.hpp",
-        "scanner.l"
+        "scanner.l",
+        "parser.y"
     ]
 
     import string
