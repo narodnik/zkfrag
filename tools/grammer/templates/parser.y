@@ -6,7 +6,7 @@
 %define api.token.constructor
 %define api.value.type variant
 %define parse.assert
-%define api.namespace { libdark }
+%define api.namespace { ${library_name} }
 %define api.location.type { libdark::location }
 
 %code requires
@@ -14,10 +14,10 @@
     #include <string>
     #include <libdark/parser/master/location.hh>
     #include "../../sigma_ast_driver.hpp"
-    #include <libdark/sigma/sigma_ast_node.hpp>
+    #include <${include_path}/${class_prefix}_ast_node.hpp>
 
-    namespace libdark {
-        class sigma_flex_scanner;
+    namespace ${library_name} {
+        class ${class_prefix}_flex_scanner;
     }
 }
 
@@ -31,12 +31,12 @@
 {
     #include "../scanner.hpp"
     #include "parser.hpp"
-    #include <libdark/sigma/sigma_ast_parser.hpp>
+    #include <${include_path}/${class_prefix}_ast_parser.hpp>
     
     // yylex() arguments are defined in parser.y
-    static libdark::sigma_bison_parser::symbol_type yylex(
-        libdark::sigma_flex_scanner &scanner,
-        libdark::sigma_ast_driver &driver)
+    static ${library_name}::${class_prefix}_bison_parser::symbol_type yylex(
+        ${library_name}::${class_prefix}_flex_scanner &scanner,
+        ${library_name}::${class_prefix}_ast_driver &driver)
     {
         return scanner.get_next_token();
     }
@@ -50,10 +50,10 @@
 // Also output the header too
 %defines "src/sigma/parser/generated/parser.hpp"
 
-%lex-param { libdark::sigma_flex_scanner& scanner }
-%lex-param { libdark::sigma_ast_driver& driver }
-%parse-param { libdark::sigma_flex_scanner& scanner }
-%parse-param { libdark::sigma_ast_driver& driver }
+%lex-param { ${library_name}::${class_prefix}_flex_scanner& scanner }
+%lex-param { ${library_name}::${class_prefix}_ast_driver& driver }
+%parse-param { ${library_name}::${class_prefix}_flex_scanner& scanner }
+%parse-param { ${library_name}::${class_prefix}_ast_driver& driver }
 %locations
 %define parse.trace
 %define parse.error verbose
@@ -64,7 +64,7 @@
 
 ${token_list}
 
-%type <libdark::sigma_ast_node::ptr>
+%type <${library_name}::${class_prefix}_ast_node::ptr>
 ${node_list}
 
 %start program
@@ -74,7 +74,7 @@ ${grammar_code}
 %%
 
 // Bison expects us to provide implementation - otherwise linker complains
-void libdark::sigma_bison_parser::error(
+void ${library_name}::${class_prefix}_bison_parser::error(
     const location &loc , const std::string &message)
 {
     driver.error_message = message;
