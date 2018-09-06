@@ -8,38 +8,46 @@ class CodeCompiler:
         self.node_types = set()
 
     def compile(self):
-        self._result = ""
+        result = ""
         for name, sub_grammars in self.grammars:
-            self._result += "%s:\n" % name
+            result += "%s:\n" % name
+            subs = []
             for sub_grammar in sub_grammars:
-                self._write_subgrammar(sub_grammar)
-        return self._result
+                subs.append(self._write_subgrammar(name, sub_grammar))
+            result += "    " + "    | ".join(subs)
+            result += "    ;\n"
+        return result
 
-    def _write_subgrammar(self, sub_grammar):
+    def _write_subgrammar(self, name, sub_grammar):
         rules, code = sub_grammar
-        self._result += "    "
-        self._result += " ".join(rules) + "\n"
-        self._result += "    {\n"
-        self._write_code(code)
-        self._result += "    }\n"
-        self._result += "    ;\n"
+        result = " ".join(rules) + "\n"
+        result += "    {\n"
+        result += self._write_code(code)
+        if name == "program":
+            result += "\n" + self._code_line("driver.root = $$;")
+        result += "    }\n"
+        return result
 
     def _write_code(self, code):
+        result = ""
         for instruction, arguments in code:
             if instruction == "init":
-                self._write_init(arguments)
+                result += self._write_init(arguments)
             elif instruction == "return":
-                self._write_return(arguments)
+                result += self._write_return(arguments)
             elif instruction == "add":
-                self._write_add(arguments)
+                result += self._write_add(arguments)
             elif instruction == "assign":
-                self._write_assign(arguments)
+                result += self._write_assign(arguments)
             else:
                 print(instruction)
                 print(arguments)
                 assert False
+        return result
 
     def _write_init(self, arguments):
+        result = ""
+
         assert len(arguments) == 5
         (varname, init_type, init_data,
          init_inherit, init_children) = arguments
@@ -48,41 +56,43 @@ class CodeCompiler:
         if init_type == "template":
             init_type = "template_"
 
-        self._write_code_line(
+        result += self._code_line(
             "auto %s = std::make_shared<libdark::sigma_ast_node>(" % varname)
         value_data = ""
         if init_data is not None:
             value_data = ", %s" % init_data
         elif init_inherit is not None:
             value_data = ", %s->value" % init_inherit
-        self._write_code_line(
+        result += self._code_line(
             "    libdark::sigma_ast_type::%s%s);" % (init_type, value_data))
         for child in init_children:
-            self._write_code_line(
+            result += self._code_line(
                 "%s->children.push_back(%s);" % (varname, child))
         if init_inherit is not None:
-            self._write_code_line(
+            result += self._code_line(
                 "%s->children = std::move(%s->children);" % 
                     (varname, init_inherit))
 
         self.node_types.add(init_type)
 
+        return result
+
     def _write_return(self, argument):
-        self._write_code_line(
+        return self._code_line(
             "$$ = %s;" % argument)
 
     def _write_add(self, arguments):
         assert len(arguments) == 2
-        self._write_code_line(
+        return self._code_line(
             "%s->children.push_back(%s);" % arguments)
 
     def _write_assign(self, arguments):
         assert len(arguments) == 2
-        self._write_code_line(
+        return self._code_line(
             "auto %s = %s;" % arguments)
 
-    def _write_code_line(self, string):
-        self._result += " " * 8 + string + "\n"
+    def _code_line(self, string):
+        return " " * 8 + string + "\n"
 
     def compile_node_types(self):
         lines = []

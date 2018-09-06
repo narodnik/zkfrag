@@ -1,5 +1,5 @@
-#ifndef SIGMA_PARSER_SCANNER_HPP
-#define SIGMA_PARSER_SCANNER_HPP
+#ifndef LIBDARK_SIGMA_SIGMA_PARSER_SCANNER_HPP
+#define LIBDARK_SIGMA_SIGMA_PARSER_SCANNER_HPP
 
 
 /**
@@ -14,7 +14,7 @@
 #if !defined(yyFlexLexerOnce)
     #undef yyFlexLexer
     // the trick with prefix; no namespace here :(
-    #define yyFlexLexer libdark_FlexLexer
+    #define yyFlexLexer libdark_sigma_FlexLexer
     #include <FlexLexer.h>
 #endif
 
@@ -40,15 +40,16 @@ class sigma_flex_scanner
  : public yyFlexLexer
 {
 public:
-    sigma_flex_scanner(sigma_ast_driver& driver) : driver_(driver) {}
+    sigma_flex_scanner(sigma_ast_driver& driver)
+      : driver_(driver) {}
     virtual ~sigma_flex_scanner() {}
-    virtual libdark::sigma_bison_parser::symbol_type get_next_token();
+    virtual sigma_bison_parser::symbol_type get_next_token();
         
 private:
     sigma_ast_driver& driver_;
 };
 
-}
+} // namespace libdark
 
 #endif
 
