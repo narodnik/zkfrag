@@ -192,9 +192,32 @@ def main():
             #print(child.pretty())
             grammars = parse_grammars(child.children)
 
-    output = compiler.Compiler(options, tokens, grammars)
-    import sys
-    output.write(sys.stdout)
+    output = compiler.CodeCompiler(options, tokens, grammars)
+    grammar_code = output.compile()
+
+    template_keys = options.copy()
+    template_keys["HEADER_PREFIX"] = template_keys["header_prefix"].upper()
+    template_keys["CLASS_PREFIX"] = template_keys["class_prefix"].upper()
+    template_keys["include_path"] = "libdark/sigma/"
+
+    template_keys["node_types"] = output.compile_node_types()
+    template_keys["ast_type_to_string"] = output.compile_ast_type_to_string()
+
+    source_files = [
+        "sigma_ast_node.cpp",
+        "sigma_ast_parser.cpp",
+        "scanner.hpp",
+        "sigma_ast_driver.hpp",
+        "sigma_ast_node.hpp",
+        "sigma_ast_parser.hpp"
+    ]
+
+    import string
+    for filename in source_files:
+        with open("templates/" + filename) as infile:
+            template = string.Template(infile.read())
+            with open("generated/" + filename, "w") as outfile:
+                outfile.write(template.substitute(template_keys))
 
 if __name__ == "__main__":
     main()

@@ -1,75 +1,100 @@
-class Compiler:
+class CodeCompiler:
 
     def __init__(self, options, tokens, grammars):
         self.options = options
         self.tokens = tokens
         self.grammars = grammars
 
-    def write(self, outfile):
+        self.node_types = set()
+
+    def compile(self):
+        self._result = ""
         for name, sub_grammars in self.grammars:
-            outfile.write("%s:\n" % name)
+            self._result += "%s:\n" % name
             for sub_grammar in sub_grammars:
-                self._write_subgrammar(outfile, sub_grammar)
+                self._write_subgrammar(sub_grammar)
+        return self._result
 
-    def _write_subgrammar(self, outfile, sub_grammar):
+    def _write_subgrammar(self, sub_grammar):
         rules, code = sub_grammar
-        outfile.write("    ")
-        outfile.write(" ".join(rules) + "\n")
-        outfile.write("    {\n")
-        self._write_code(outfile, code)
-        outfile.write("    }\n")
-        outfile.write("    ;\n")
+        self._result += "    "
+        self._result += " ".join(rules) + "\n"
+        self._result += "    {\n"
+        self._write_code(code)
+        self._result += "    }\n"
+        self._result += "    ;\n"
 
-    def _write_code(self, outfile, code):
+    def _write_code(self, code):
         for instruction, arguments in code:
             if instruction == "init":
-                self._write_init(outfile, arguments)
+                self._write_init(arguments)
             elif instruction == "return":
-                self._write_return(outfile, arguments)
+                self._write_return(arguments)
             elif instruction == "add":
-                self._write_add(outfile, arguments)
+                self._write_add(arguments)
             elif instruction == "assign":
-                self._write_assign(outfile, arguments)
+                self._write_assign(arguments)
             else:
                 print(instruction)
                 print(arguments)
                 assert False
 
-    def _write_init(self, outfile, arguments):
+    def _write_init(self, arguments):
         assert len(arguments) == 5
         (varname, init_type, init_data,
          init_inherit, init_children) = arguments
-        self._write_code_line(outfile,
+
+        # Special keywords in C++
+        if init_type == "template":
+            init_type = "template_"
+
+        self._write_code_line(
             "auto %s = std::make_shared<libdark::sigma_ast_node>(" % varname)
         value_data = ""
         if init_data is not None:
             value_data = ", %s" % init_data
         elif init_inherit is not None:
             value_data = ", %s->value" % init_inherit
-        self._write_code_line(outfile,
+        self._write_code_line(
             "    libdark::sigma_ast_type::%s%s);" % (init_type, value_data))
         for child in init_children:
-            self._write_code_line(outfile,
+            self._write_code_line(
                 "%s->children.push_back(%s);" % (varname, child))
         if init_inherit is not None:
-            self._write_code_line(outfile,
+            self._write_code_line(
                 "%s->children = std::move(%s->children);" % 
                     (varname, init_inherit))
 
-    def _write_return(self, outfile, argument):
-        self._write_code_line(outfile,
+        self.node_types.add(init_type)
+
+    def _write_return(self, argument):
+        self._write_code_line(
             "$$ = %s;" % argument)
 
-    def _write_add(self, outfile, arguments):
+    def _write_add(self, arguments):
         assert len(arguments) == 2
-        self._write_code_line(outfile,
+        self._write_code_line(
             "%s->children.push_back(%s);" % arguments)
 
-    def _write_assign(self, outfile, arguments):
+    def _write_assign(self, arguments):
         assert len(arguments) == 2
-        self._write_code_line(outfile,
+        self._write_code_line(
             "auto %s = %s;" % arguments)
 
-    def _write_code_line(self, outfile, string):
-        outfile.write(" " * 8 + string + "\n")
+    def _write_code_line(self, string):
+        self._result += " " * 8 + string + "\n"
+
+    def compile_node_types(self):
+        lines = []
+        for node_type in self.node_types:
+            lines.append(" " * 4 + node_type)
+        return ",\n".join(lines)
+
+    def compile_ast_type_to_string(self):
+        result = ""
+        for node_type in self.node_types:
+            result += " " * 4 + "case %s_ast_type::%s:\n" % (
+                self.options["class_prefix"], node_type)
+            result += " " * 8 + 'return "%s";\n' % node_type
+        return result
 
