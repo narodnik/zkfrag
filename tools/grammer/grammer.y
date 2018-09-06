@@ -48,11 +48,18 @@ header:
 version_number:
     NUMBER DOT NUMBER
     {
-        return <version> [ $1, $3 ]
+        return <version> [
+            <number> : $1,
+            <number> : $3
+        ]
     }
     | NUMBER DOT NUMBER DOT NUMBER
     {
-        return <version> [ $1, $3, $5 ]
+        return <version> [
+            <number> : $1,
+            <number> : $3,
+            <number> : $5
+        ]
     }
     ;
 

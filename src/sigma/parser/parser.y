@@ -114,12 +114,12 @@
 program:
     header private prove
     {
-        auto _K2233E7SJ9MY = std::make_shared<libdark::sigma_ast_node>(
+        auto _P2608RG5L03L = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::root);
-        _K2233E7SJ9MY->children.push_back($1);
-        _K2233E7SJ9MY->children.push_back($2);
-        _K2233E7SJ9MY->children.push_back($3);
-        $$ = _K2233E7SJ9MY;
+        _P2608RG5L03L->children.push_back($1);
+        _P2608RG5L03L->children.push_back($2);
+        _P2608RG5L03L->children.push_back($3);
+        $$ = _P2608RG5L03L;
 
         driver.root = $$;
     }
@@ -133,20 +133,30 @@ header:
 version_number:
     NUMBER DOT NUMBER
     {
-        auto _COMM1AW5I45I = std::make_shared<libdark::sigma_ast_node>(
+        auto _NPKQNGIJGR2M = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::number, $1);
+        auto _7DGD4TLK7TY0 = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::number, $3);
+        auto _PL1BMPUE04PQ = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::version);
-        //_COMM1AW5I45I->children.push_back($1);
-        //_COMM1AW5I45I->children.push_back($3);
-        $$ = _COMM1AW5I45I;
+        _PL1BMPUE04PQ->children.push_back(_NPKQNGIJGR2M);
+        _PL1BMPUE04PQ->children.push_back(_7DGD4TLK7TY0);
+        $$ = _PL1BMPUE04PQ;
     }
     | NUMBER DOT NUMBER DOT NUMBER
     {
-        auto _92QOBEQQEMYI = std::make_shared<libdark::sigma_ast_node>(
+        auto _M9VEF1QKT7IK = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::number, $1);
+        auto _13DKF1SC3QFE = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::number, $3);
+        auto _ED4F41B10GD9 = std::make_shared<libdark::sigma_ast_node>(
+            libdark::sigma_ast_type::number, $5);
+        auto _WE9JI3XPOGL6 = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::version);
-        //_92QOBEQQEMYI->children.push_back($1);
-        //_92QOBEQQEMYI->children.push_back($3);
-        //_92QOBEQQEMYI->children.push_back($5);
-        $$ = _92QOBEQQEMYI;
+        _WE9JI3XPOGL6->children.push_back(_M9VEF1QKT7IK);
+        _WE9JI3XPOGL6->children.push_back(_13DKF1SC3QFE);
+        _WE9JI3XPOGL6->children.push_back(_ED4F41B10GD9);
+        $$ = _WE9JI3XPOGL6;
     }
     ;
 private:
@@ -163,33 +173,33 @@ private_values:
     }
     | private_value
     {
-        auto _1JSTIQEKD998 = std::make_shared<libdark::sigma_ast_node>(
+        auto _IACFLKJEKAHK = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::private_section);
-        _1JSTIQEKD998->children.push_back($1);
-        $$ = _1JSTIQEKD998;
+        _IACFLKJEKAHK->children.push_back($1);
+        $$ = _IACFLKJEKAHK;
     }
     ;
 private_value:
     TOKEN
     {
-        auto _WKIDOBUYMJCE = std::make_shared<libdark::sigma_ast_node>(
+        auto _ELFI7808PT16 = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::private_value, $1);
-        $$ = _WKIDOBUYMJCE;
+        $$ = _ELFI7808PT16;
     }
     ;
 prove:
     PROVE COLON statements
     {
-        auto _NP0JFB8IF3OU = std::make_shared<libdark::sigma_ast_node>(
+        auto _WDMPVV9FCHGD = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::prove_section, $3->value);
-        _NP0JFB8IF3OU->children = std::move($3->children);
-        $$ = _NP0JFB8IF3OU;
+        _WDMPVV9FCHGD->children = std::move($3->children);
+        $$ = _WDMPVV9FCHGD;
     }
     | PROVE COLON
     {
-        auto _UBGZ7EGNJIQG = std::make_shared<libdark::sigma_ast_node>(
+        auto _1SFE44QN14HQ = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::prove_section);
-        $$ = _UBGZ7EGNJIQG;
+        $$ = _1SFE44QN14HQ;
     }
     ;
 statements:
@@ -200,10 +210,10 @@ statements:
     }
     | statement
     {
-        auto _Q4MX9DECUIPB = std::make_shared<libdark::sigma_ast_node>(
+        auto _9ZYGTF57445T = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::template_);
-        _Q4MX9DECUIPB->children.push_back($1);
-        $$ = _Q4MX9DECUIPB;
+        _9ZYGTF57445T->children.push_back($1);
+        $$ = _9ZYGTF57445T;
     }
     ;
 statement:
@@ -231,72 +241,72 @@ statement:
 represent:
     REPRESENT L_BRACKET equality_expression R_BRACKET
     {
-        auto _4QJN4WWHK2AL = std::make_shared<libdark::sigma_ast_node>(
+        auto _71UF6GW5VAPY = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::represent);
-        _4QJN4WWHK2AL->children.push_back($3);
-        $$ = _4QJN4WWHK2AL;
+        _71UF6GW5VAPY->children.push_back($3);
+        $$ = _71UF6GW5VAPY;
     }
     ;
 linear_equation:
     LINEAR_EQUATION L_BRACKET equality_expression R_BRACKET
     {
-        auto _63B6XRLZM1XH = std::make_shared<libdark::sigma_ast_node>(
+        auto _11DLLFY4I00Y = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::linear_equation);
-        _63B6XRLZM1XH->children.push_back($3);
-        $$ = _63B6XRLZM1XH;
+        _11DLLFY4I00Y->children.push_back($3);
+        $$ = _11DLLFY4I00Y;
     }
     ;
 range_proof:
     RANGE_PROOF L_BRACKET range_expression R_BRACKET
     {
-        auto _9I25ROIT89PO = std::make_shared<libdark::sigma_ast_node>(
+        auto _TMAS8N8I35UA = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::range_proof);
-        _9I25ROIT89PO->children.push_back($3);
-        $$ = _9I25ROIT89PO;
+        _TMAS8N8I35UA->children.push_back($3);
+        $$ = _TMAS8N8I35UA;
     }
     ;
 equality_expression:
     expression EQUAL expression
     {
-        auto _KTSNLVGDTSW3 = std::make_shared<libdark::sigma_ast_node>(
+        auto _YJVI5F2S3XXL = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::equal);
-        _KTSNLVGDTSW3->children.push_back($1);
-        _KTSNLVGDTSW3->children.push_back($3);
-        $$ = _KTSNLVGDTSW3;
+        _YJVI5F2S3XXL->children.push_back($1);
+        _YJVI5F2S3XXL->children.push_back($3);
+        $$ = _YJVI5F2S3XXL;
     }
     ;
 range_expression:
     expression LESS_EQ expression
     {
-        auto _2V6WH561GNO4 = std::make_shared<libdark::sigma_ast_node>(
+        auto _3SGQCWO1T74X = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::less_equal);
-        _2V6WH561GNO4->children.push_back($1);
-        _2V6WH561GNO4->children.push_back($3);
-        $$ = _2V6WH561GNO4;
+        _3SGQCWO1T74X->children.push_back($1);
+        _3SGQCWO1T74X->children.push_back($3);
+        $$ = _3SGQCWO1T74X;
     }
     | expression GREATER_EQ expression
     {
-        auto _JWTR1OLPPMZK = std::make_shared<libdark::sigma_ast_node>(
+        auto _037DKD7Y0J4G = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::greater_equal);
-        _JWTR1OLPPMZK->children.push_back($1);
-        _JWTR1OLPPMZK->children.push_back($3);
-        $$ = _JWTR1OLPPMZK;
+        _037DKD7Y0J4G->children.push_back($1);
+        _037DKD7Y0J4G->children.push_back($3);
+        $$ = _037DKD7Y0J4G;
     }
     | expression LESS expression
     {
-        auto _JYLBBS4BPLDX = std::make_shared<libdark::sigma_ast_node>(
+        auto _X1MOBLJAC9AG = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::less);
-        _JYLBBS4BPLDX->children.push_back($1);
-        _JYLBBS4BPLDX->children.push_back($3);
-        $$ = _JYLBBS4BPLDX;
+        _X1MOBLJAC9AG->children.push_back($1);
+        _X1MOBLJAC9AG->children.push_back($3);
+        $$ = _X1MOBLJAC9AG;
     }
     | expression GREATER expression
     {
-        auto _US263B6ACUIU = std::make_shared<libdark::sigma_ast_node>(
+        auto _XM40PX7ILXV0 = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::greater);
-        _US263B6ACUIU->children.push_back($1);
-        _US263B6ACUIU->children.push_back($3);
-        $$ = _US263B6ACUIU;
+        _XM40PX7ILXV0->children.push_back($1);
+        _XM40PX7ILXV0->children.push_back($3);
+        $$ = _XM40PX7ILXV0;
     }
     ;
 expression:
@@ -307,87 +317,87 @@ expression:
     }
     | expression MINUS item
     {
-        auto _7473GDJANIXU = std::make_shared<libdark::sigma_ast_node>(
+        auto _ON73SA7G0PQB = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::negative);
-        _7473GDJANIXU->children.push_back($3);
-        auto negative = _7473GDJANIXU;
+        _ON73SA7G0PQB->children.push_back($3);
+        auto negative = _ON73SA7G0PQB;
         $1->children.push_back(negative);
         $$ = $1;
     }
     | item
     {
-        auto _ATX741015WN2 = std::make_shared<libdark::sigma_ast_node>(
+        auto _TKVT2ERFSZXK = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::sum);
-        _ATX741015WN2->children.push_back($1);
-        $$ = _ATX741015WN2;
+        _TKVT2ERFSZXK->children.push_back($1);
+        $$ = _TKVT2ERFSZXK;
     }
     ;
 item:
     TOKEN TOKEN
     {
-        auto _8B33N2ZNSKKA = std::make_shared<libdark::sigma_ast_node>(
+        auto _SHS5LL3UKPBI = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::variable, $1);
-        auto _GAACY4FA82XT = std::make_shared<libdark::sigma_ast_node>(
+        auto _XTCJVN7JAQFT = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::variable, $2);
-        auto _JXRR0URROCXV = std::make_shared<libdark::sigma_ast_node>(
+        auto _EGRJ1I92XV2P = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::multiply);
-        _JXRR0URROCXV->children.push_back(_8B33N2ZNSKKA);
-        _JXRR0URROCXV->children.push_back(_GAACY4FA82XT);
-        $$ = _JXRR0URROCXV;
+        _EGRJ1I92XV2P->children.push_back(_SHS5LL3UKPBI);
+        _EGRJ1I92XV2P->children.push_back(_XTCJVN7JAQFT);
+        $$ = _EGRJ1I92XV2P;
     }
     | TOKEN MULTIPLY TOKEN
     {
-        auto _NWFAT8QDNOOM = std::make_shared<libdark::sigma_ast_node>(
+        auto _FPD15SUYG01R = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::variable, $1);
-        auto _HPCFSLY8MH2J = std::make_shared<libdark::sigma_ast_node>(
+        auto _1BY6LNFZDW6S = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::variable, $2);
-        auto _1WCB2Q1ADBZ0 = std::make_shared<libdark::sigma_ast_node>(
+        auto _S0ZVJ3O3TUBB = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::multiply);
-        _1WCB2Q1ADBZ0->children.push_back(_NWFAT8QDNOOM);
-        _1WCB2Q1ADBZ0->children.push_back(_HPCFSLY8MH2J);
-        $$ = _1WCB2Q1ADBZ0;
+        _S0ZVJ3O3TUBB->children.push_back(_FPD15SUYG01R);
+        _S0ZVJ3O3TUBB->children.push_back(_1BY6LNFZDW6S);
+        $$ = _S0ZVJ3O3TUBB;
     }
     | TOKEN
     {
-        auto _CXV2S0CVVCH2 = std::make_shared<libdark::sigma_ast_node>(
+        auto _SNQWVXQ7Z4PM = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::variable, $1);
-        $$ = _CXV2S0CVVCH2;
+        $$ = _SNQWVXQ7Z4PM;
     }
     | NUMBER TOKEN
     {
-        auto _QGX2Z0G8SH66 = std::make_shared<libdark::sigma_ast_node>(
+        auto _I27HTUYY72OS = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::number, $1);
-        auto _JL47M0M6IPXK = std::make_shared<libdark::sigma_ast_node>(
+        auto _383ZHMUT86T7 = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::variable, $2);
-        auto _LW07IQ7LWIFU = std::make_shared<libdark::sigma_ast_node>(
+        auto _PG3O0J8NQCRN = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::multiply);
-        _LW07IQ7LWIFU->children.push_back(_QGX2Z0G8SH66);
-        _LW07IQ7LWIFU->children.push_back(_JL47M0M6IPXK);
-        $$ = _LW07IQ7LWIFU;
+        _PG3O0J8NQCRN->children.push_back(_I27HTUYY72OS);
+        _PG3O0J8NQCRN->children.push_back(_383ZHMUT86T7);
+        $$ = _PG3O0J8NQCRN;
     }
     | NUMBER
     {
-        auto _M6U03SWNBOKF = std::make_shared<libdark::sigma_ast_node>(
+        auto _GQ21YC8Y5Q3T = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::number, $1);
-        $$ = _M6U03SWNBOKF;
+        $$ = _GQ21YC8Y5Q3T;
     }
     ;
 any:
     ANY L_BRACKET statements R_BRACKET
     {
-        auto _K02MIKSF3VME = std::make_shared<libdark::sigma_ast_node>(
+        auto _UHTT7BKWY96U = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::any, $3->value);
-        _K02MIKSF3VME->children = std::move($3->children);
-        $$ = _K02MIKSF3VME;
+        _UHTT7BKWY96U->children = std::move($3->children);
+        $$ = _UHTT7BKWY96U;
     }
     ;
 all:
     ALL L_BRACKET statements R_BRACKET
     {
-        auto _JCQ0V106UIJZ = std::make_shared<libdark::sigma_ast_node>(
+        auto _ZCSPNRT1K65Z = std::make_shared<libdark::sigma_ast_node>(
             libdark::sigma_ast_type::all, $3->value);
-        _JCQ0V106UIJZ->children = std::move($3->children);
-        $$ = _JCQ0V106UIJZ;
+        _ZCSPNRT1K65Z->children = std::move($3->children);
+        $$ = _ZCSPNRT1K65Z;
     }
     ;
 
