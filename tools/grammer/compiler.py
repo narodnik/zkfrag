@@ -98,3 +98,31 @@ class CodeCompiler:
             result += " " * 8 + 'return "%s";\n' % node_type
         return result
 
+class FlexCompiler:
+
+    def __init__(self, options, tokens):
+        self.options = options
+        self.tokens = tokens
+
+    def compile(self):
+        result = ""
+        for token, cname in self.tokens:
+            result += token
+            adjust = 8 - len(token)
+            if adjust <= 0:
+                adjust = 1
+            result += " " * adjust
+            if cname is None:
+                result += ";\n"
+            else:
+                result += self._return_segment(cname)
+        return result
+
+    def _return_segment(self, cname):
+        return ("{\n" +
+            " " * 12 + "return %s::%s_bison_parser::make_%s(\n" % (
+                self.options["library_name"], self.options["class_prefix"],
+                cname) +
+            " " * 16 + "libdark::location());\n" +
+            " " * 8 + "}\n")
+

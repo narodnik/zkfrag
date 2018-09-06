@@ -203,13 +203,17 @@ def main():
     template_keys["node_types"] = output.compile_node_types()
     template_keys["ast_type_to_string"] = output.compile_ast_type_to_string()
 
+    flex = compiler.FlexCompiler(options, tokens)
+    template_keys["flex_tokens"] = flex.compile()
+
     source_files = [
         "sigma_ast_node.cpp",
         "sigma_ast_parser.cpp",
         "scanner.hpp",
         "sigma_ast_driver.hpp",
         "sigma_ast_node.hpp",
-        "sigma_ast_parser.hpp"
+        "sigma_ast_parser.hpp",
+        "scanner.l"
     ]
 
     import string
