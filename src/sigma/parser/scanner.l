@@ -22,7 +22,6 @@
 %option c++
 %option yyclass="sigma_flex_scanner"
 %option prefix="libdark_sigma_"
-%option outfile="src/sigma/parser/generated/scanner.cpp" header-file="src/sigma/parser/generated/scanner.hpp"
 
 %%
 [ \t\n] ;

@@ -22,7 +22,6 @@
 %option c++
 %option yyclass="${class_prefix}_flex_scanner"
 %option prefix="${library_name}_${class_prefix}_"
-%option outfile="src/sigma/parser/generated/scanner.cpp" header-file="src/sigma/parser/generated/scanner.hpp"
 
 %%
 ${flex_tokens}

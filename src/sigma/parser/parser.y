@@ -46,9 +46,6 @@
     // #define yylex(x, y) scanner.get_next_token()
 }
 
-%output  "src/sigma/parser/generated/parser.cpp"
-// Also output the header too
-%defines "src/sigma/parser/generated/parser.hpp"
 
 %lex-param { libdark::sigma_flex_scanner& scanner }
 %lex-param { libdark::sigma_ast_driver& driver }
