@@ -1,6 +1,7 @@
 options {
-    header_prefix=GRAMMER
-    namespace_name=grammer
+    header_prefix=LIBDARK_SIGMA
+    library_name=libdark
+    class_prefix=sigma
 }
 
 tokens {

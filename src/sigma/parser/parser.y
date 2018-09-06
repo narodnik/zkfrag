@@ -6,10 +6,14 @@
 %define api.token.constructor
 %define api.value.type variant
 %define parse.assert
+
 %define api.namespace { libdark }
+%define api.location.type { libdark::location }
+
 %code requires
 {
     #include <string>
+    #include <libdark/parser/master/location.hh>
     #include "../../sigma_ast_driver.hpp"
     #include <libdark/sigma/sigma_ast_node.hpp>
 
@@ -29,7 +33,6 @@
     #include "../scanner.hpp"
     #include "parser.hpp"
     #include <libdark/sigma/sigma_ast_parser.hpp>
-    #include "location.hh"
     
     // yylex() arguments are defined in parser.y
     static libdark::sigma_bison_parser::symbol_type yylex(

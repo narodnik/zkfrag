@@ -5,7 +5,7 @@
     #include "../scanner.hpp"
     #include <libdark/sigma/sigma_ast_parser.hpp>
     #include "parser.hpp"
-    #include "location.hh"
+    #include <libdark/parser/master/location.hh>
     
     // Original yyterminate() macro returns int. Since we're using
     // Bison 3 variants as tokens, we must redefine it to change type
