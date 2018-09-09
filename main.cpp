@@ -4,6 +4,12 @@
 #include <string>
 #include <libdark.hpp>
 
+#include <libdark/pirromean/gate.hpp>
+#include <libdark/pirromean/keypair.hpp>
+#include <libdark/pirromean/model.hpp>
+#include <libdark/pirromean/portal.hpp>
+#include <libdark/pirromean/witness.hpp>
+
 void print_ast(libdark::sigma_ast_node::ptr node, size_t indent=0)
 {
     std::cout << std::string(indent, ' ')
@@ -87,6 +93,45 @@ int main(int argc, char** argv)
     DARK_ASSERT(variables["G"].point());
     DARK_ASSERT(variables["d"].scalar());
     DARK_ASSERT(variables["Q"].point());
+
+    typedef libdark::pirr_keypair<libdark::curve_secp256k1> pirr_keypair;
+    typedef libdark::pirr_witness<libdark::curve_secp256k1> pirr_witness;
+    typedef libdark::pirr_portal<libdark::curve_secp256k1> pirr_portal;
+    typedef libdark::pirr_gate<libdark::curve_secp256k1> pirr_gate;
+    typedef libdark::pirr_model<libdark::curve_secp256k1> pirr_model;
+
+    auto gate_0 = std::make_shared<pirr_gate>(0);
+    auto gate_1 = std::make_shared<pirr_gate>(1);
+    auto gate_2 = std::make_shared<pirr_gate>(2);
+    auto gate_3 = std::make_shared<pirr_gate>(3);
+    libdark::link(gate_0, gate_3);
+
+    auto portal_a = std::make_shared<pirr_portal>(pirr_keypair::list{
+        pirr_keypair::random(*variables["G"].point())
+    });
+    auto portal_b = std::make_shared<pirr_portal>(pirr_keypair::list{
+        pirr_keypair::random(*variables["G"].point()).clone_public()
+    });
+    auto portal_c = std::make_shared<pirr_portal>(pirr_keypair::list{
+        pirr_keypair::random(*variables["G"].point())
+    });
+    auto portal_d = std::make_shared<pirr_portal>(pirr_keypair::list{
+        pirr_keypair::random(*variables["G"].point()).clone_public()
+    });
+
+    libdark::connect(gate_0, portal_a, gate_2);
+
+    libdark::connect(gate_0, portal_b, gate_1);
+    libdark::connect(gate_1, portal_c, gate_2);
+
+    libdark::connect(gate_2, portal_d, gate_3);
+
+    auto model = pirr_model(
+        { gate_0, gate_1, gate_2, gate_3 },
+        { portal_a, portal_b, portal_c, portal_d }
+    );
+
+    model.sign();
 
     const auto result = check_rules(root, variables);
     const auto ec = result.first;
