@@ -1,8 +1,8 @@
 #ifndef LIBDARK_PIRROMEAN_GATE_HPP
 #define LIBDARK_PIRROMEAN_GATE_HPP
 
-#include <list>
 #include <memory>
+#include <vector>
 #include <libdark/pirromean/portal.hpp>
 
 namespace libdark {
@@ -15,7 +15,7 @@ public:
     typedef typename pirr_portal<CurveType>::ptrlist portal_ptrlist;
 
     typedef std::shared_ptr<pirr_gate> ptr;
-    typedef std::list<ptr> ptrlist;
+    typedef std::vector<ptr> ptrlist;
 
     pirr_gate(size_t index);
 
@@ -26,9 +26,14 @@ public:
     bool is_start() const;
     bool is_end() const;
 
+    bool has_challenge() const;
     const ec_scalar& challenge() const;
+    void set_challenge(const ec_scalar& challenge);
+
+    void compute_challenge();
 
     portal_ptrlist inputs() const;
+    portal_ptrlist outputs() const;
 
     std::string pretty(size_t indent=0) const;
 

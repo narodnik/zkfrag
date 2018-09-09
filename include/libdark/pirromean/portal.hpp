@@ -1,7 +1,6 @@
 #ifndef LIBDARK_PIRROMEAN_PORTAL_HPP
 #define LIBDARK_PIRROMEAN_PORTAL_HPP
 
-#include <list>
 #include <vector>
 #include <libdark/pirromean/keypair.hpp>
 #include <libdark/pirromean/witness.hpp>
@@ -23,20 +22,31 @@ public:
     typedef typename witness_type::list witness_list;
     typedef std::vector<response_type> response_list;
 
+    typedef pirr_gate<CurveType> gate_type;
+    typedef std::weak_ptr<gate_type> gate_wptr;
+
     typedef std::shared_ptr<pirr_portal> ptr;
-    typedef std::list<ptr> ptrlist;
+    typedef std::vector<ptr> ptrlist;
 
     pirr_portal(const keypair_list& keys);
 
+    const witness_list& witnesses() const;
+
+    gate_wptr input() const;
+    gate_wptr output() const;
+
     std::string pretty(size_t indent=0) const;
+
+    bool is_signing_portal() const;
+    void create_random_responses();
+    void derive_witnesses();
+    void create_random_witnesses();
+    void compute_valid_responses();
 
 private:
     template <typename GatePtrType, typename PortalPtrType>
     friend void connect(
         GatePtrType start, PortalPtrType portal, GatePtrType end);
-
-    typedef pirr_gate<CurveType> gate_type;
-    typedef std::weak_ptr<gate_type> gate_wptr;
 
     const keypair_list keys_;
     witness_list witnesses_;

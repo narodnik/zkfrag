@@ -23,8 +23,6 @@ private:
     gate_ptr start_gate() const;
     gate_ptr end_gate() const;
 
-    void get_challenge(gate_ptr gate) const;
-
     gate_ptrlist gates_;
     portal_ptrlist portals_;
 };
