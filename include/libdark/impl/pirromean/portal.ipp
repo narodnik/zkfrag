@@ -17,6 +17,11 @@ pirr_portal<CurveType>::witnesses() const
 {
     return witnesses_;
 }
+template <typename CurveType>
+bool pirr_portal<CurveType>::has_empty_witness() const
+{
+    return witnesses_.size() != keys_.size();
+}
 
 template <typename CurveType>
 typename pirr_portal<CurveType>::gate_wptr
@@ -42,6 +47,12 @@ std::string pirr_portal<CurveType>::pretty(size_t indent) const
     for (const auto& response: responses_)
         result += std::string((indent + 1) * 4, ' ') + "response: " +
             bc::encode_base16(response.secret()) + '\n';
+    if (auto input = input_.lock())
+        result += std::string((indent + 1) * 4, ' ') + "input: " +
+            std::to_string(input->index()) + '\n';
+    if (auto output = output_.lock())
+        result += std::string((indent + 1) * 4, ' ') + "output: " +
+            std::to_string(output->index()) + '\n';
     return result;
 }
 
@@ -49,7 +60,7 @@ template <typename CurveType>
 bool pirr_portal<CurveType>::is_signing_portal() const
 {
     for (const auto& key: keys_)
-        if (!key.secret())
+        if (!key.has_secret())
             return false;
     return true;
 }

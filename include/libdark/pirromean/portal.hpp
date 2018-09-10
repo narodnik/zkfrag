@@ -31,6 +31,7 @@ public:
     pirr_portal(const keypair_list& keys);
 
     const witness_list& witnesses() const;
+    bool has_empty_witness() const;
 
     gate_wptr input() const;
     gate_wptr output() const;

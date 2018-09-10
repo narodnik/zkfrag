@@ -19,6 +19,8 @@ public:
     void sign();
     bool verify() const;
 
+    std::string pretty(size_t indent=0) const;
+
 private:
     gate_ptr start_gate() const;
     gate_ptr end_gate() const;

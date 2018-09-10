@@ -66,14 +66,24 @@ void pirr_gate<CurveType>::compute_challenge()
         {
             auto witness = witnesses[j];
 
-            bc::data_chunk data(bc::ec_compressed_size + 8);
+            bc::data_chunk data(bc::ec_compressed_size + 4 * 3);
             auto serial = bc::make_unsafe_serializer(data.begin());
             serial.write_bytes(witness.commit().point());
             serial.write_4_bytes_little_endian(i);
             serial.write_4_bytes_little_endian(j);
+            serial.write_4_bytes_little_endian(index_);
         }
     }
     challenge_ = hasher.result();
+}
+
+template <typename CurveType>
+bool pirr_gate<CurveType>::has_empty_input_witnesses() const
+{
+    for (const auto input: inputs_)
+        if (input->has_empty_witness())
+            return false;
+    return true;
 }
 
 template <typename CurveType>
@@ -92,7 +102,17 @@ pirr_gate<CurveType>::outputs() const
 template <typename CurveType>
 std::string pirr_gate<CurveType>::pretty(size_t indent) const
 {
-    return "";
+    auto result = std::string(indent * 4, ' ') + "gate:\n";
+    result += std::string((indent + 1) * 4, ' ') + "index: " +
+        std::to_string(index_) + '\n';
+    if (challenge_)
+        result += std::string((indent + 1) * 4, ' ') + "challenge: " +
+            bc::encode_base16(challenge_.secret()) + '\n';
+    if (position_ == position_type::start)
+        result += std::string((indent + 1) * 4, ' ') + "is_start: true\n";
+    else if (position_ == position_type::end)
+        result += std::string((indent + 1) * 4, ' ') + "is_end: true\n";
+    return result;
 }
 
 template <typename GatePtrType>

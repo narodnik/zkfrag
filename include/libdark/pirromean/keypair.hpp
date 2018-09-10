@@ -29,7 +29,7 @@ public:
     static pirr_keypair random(const ec_point& generator);
 
     bool has_secret() const;
-    const ec_scalar secret() const;
+    const ec_scalar& secret() const;
     const ec_point& public_() const;
     const ec_point& generator() const;
 

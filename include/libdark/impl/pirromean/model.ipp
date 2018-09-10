@@ -18,6 +18,9 @@ void perform_protocol(PortalPtrType portal);
 template <typename GatePtrType>
 void make_join(GatePtrType gate);
 
+template <typename GatePtrType>
+void perform_verify(GatePtrType gate);
+
 template <typename CurveType>
 pirr_model<CurveType>::pirr_model(gate_ptrlist gates, portal_ptrlist portals)
   : gates_(gates), portals_(portals)
@@ -80,10 +83,10 @@ void compute_witness(PortalPtrType portal)
 template <typename PortalPtrType>
 void simulate_witness(PortalPtrType portal)
 {
-    auto gate = portal->input().lock();
-    if (!gate)
-        // TODO: return error
-        throw;
+    auto input_gate = portal->input().lock();
+    DARK_ASSERT(input_gate);
+    get_challenge(input_gate);
+
     portal->create_random_responses();
     portal->derive_witnesses();
 }
@@ -108,8 +111,7 @@ void make_join(GatePtrType gate)
             portal->derive_witnesses();
 
             auto next = portal->output().lock();
-            if (!next)
-                throw;
+            DARK_ASSERT(next);
             make_join(next);
         }
     }
@@ -118,7 +120,46 @@ void make_join(GatePtrType gate)
 template <typename CurveType>
 bool pirr_model<CurveType>::verify() const
 {
-    return true;
+    auto start = start_gate();
+    perform_verify(start);
+    auto end = end_gate();
+    return start->challenge() == end->challenge();
+}
+
+template <typename GatePtrType>
+void perform_verify(GatePtrType gate)
+{
+    if (!gate->has_challenge())
+    {
+        DARK_ASSERT(gate->is_start());
+    }
+    else
+    {
+        // Wait for other inputs to finish
+        if (gate->has_empty_input_witnesses())
+            return;
+        gate->compute_challenge();
+    }
+
+    for (auto portal: gate->outputs())
+    {
+        portal->derive_witnesses();
+
+        auto output = portal->output().lock();
+        DARK_ASSERT(output);
+        perform_verify(output);
+    }
+}
+
+template <typename CurveType>
+std::string pirr_model<CurveType>::pretty(size_t indent) const
+{
+    auto result = std::string(indent * 4, ' ') + "model: \n";
+    for (auto gate: gates_)
+        result += gate->pretty(indent + 1);
+    for (auto portal: portals_)
+        result += portal->pretty(indent + 1);
+    return result;
 }
 
 } // namespace libdark

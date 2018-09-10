@@ -33,7 +33,7 @@ bool pirr_keypair<CurveType>::has_secret() const
     return (bool)secret_;
 }
 template <typename CurveType>
-const typename pirr_keypair<CurveType>::ec_scalar
+const typename pirr_keypair<CurveType>::ec_scalar&
 pirr_keypair<CurveType>::secret() const
 {
     return *secret_;

@@ -131,7 +131,13 @@ int main(int argc, char** argv)
         { portal_a, portal_b, portal_c, portal_d }
     );
 
+    std::cout << "Unsigned: " << model.pretty() << std::endl;
+
     model.sign();
+
+    std::cout << "Signed: " << model.pretty() << std::endl;
+
+    std::cout << "Verify: " << model.verify() << std::endl;
 
     const auto result = check_rules(root, variables);
     const auto ec = result.first;

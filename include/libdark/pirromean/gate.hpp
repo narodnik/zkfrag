@@ -32,6 +32,8 @@ public:
 
     void compute_challenge();
 
+    bool has_empty_input_witnesses() const;
+
     portal_ptrlist inputs() const;
     portal_ptrlist outputs() const;
 
