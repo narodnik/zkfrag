@@ -1,0 +1,10 @@
+invented my own custom programming language for parsing grammars
+
+a parser for sigma protocol scripts
+
+add build system
+document pirromean sigs
+next I will add an encrypted SQLite database system for managing accounts and keys, abstract the ec curve further (integrating milagro and other libs), and start the network subsystem
+pairing based crypto also
+pirromean
+
