@@ -61,6 +61,7 @@ void pirr_model<CurveType>::sign()
 template <typename GatePtrType>
 void get_challenge(GatePtrType gate)
 {
+    // What does this mean?
     if (gate->has_challenge())
         return;
     // TODO: sort this out, "invalid graph"
@@ -149,6 +150,49 @@ void perform_verify(GatePtrType gate)
         DARK_ASSERT(output);
         perform_verify(output);
     }
+}
+
+template <typename GatePtrList>
+typename GatePtrList::value_type find_gate(GatePtrList& gates, size_t index)
+{
+    for (auto gate: gates)
+        if (gate->index() == index)
+            return gate;
+    return nullptr;
+}
+
+template <typename CurveType>
+pirr_model<CurveType> pirr_model<CurveType>::clone_public() const
+{
+    gate_ptrlist cloned_gates;
+    for (auto gate: gates_)
+        cloned_gates.push_back(gate->clone_public());
+
+    auto start = find_gate(cloned_gates, start_gate()->index());
+    auto end = find_gate(cloned_gates, end_gate()->index());
+    link(start, end);
+
+    portal_ptrlist cloned_portals;
+    for (auto portal: portals_)
+    {
+        auto cloned_portal = portal->clone_public();
+        cloned_portals.push_back(cloned_portal);
+
+        auto input = portal->input().lock();
+        DARK_ASSERT(input);
+        auto output = portal->output().lock();
+        DARK_ASSERT(output);
+
+        auto cloned_input = find_gate(cloned_gates, input->index());
+        DARK_ASSERT(cloned_input);
+        auto cloned_output = find_gate(cloned_gates, output->index());
+        DARK_ASSERT(cloned_output);
+
+        connect(cloned_input, cloned_portal, cloned_input);
+    }
+
+    pirr_model result(cloned_gates, cloned_portals);
+    return result;
 }
 
 template <typename CurveType>

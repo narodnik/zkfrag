@@ -29,6 +29,10 @@ public:
     typedef std::vector<ptr> ptrlist;
 
     pirr_portal(const keypair_list& keys);
+    pirr_portal(const keypair_list& keys,
+        const witness_list& witnesses, const response_list& responses);
+
+    ptr clone_public() const;
 
     const witness_list& witnesses() const;
     bool has_empty_witness() const;

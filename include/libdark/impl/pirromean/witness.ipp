@@ -27,6 +27,12 @@ pirr_witness<CurveType> pirr_witness<CurveType>::random(
 }
 
 template <typename CurveType>
+pirr_witness<CurveType> pirr_witness<CurveType>::clone_public() const
+{
+    return pirr_witness(commit_);
+}
+
+template <typename CurveType>
 bool pirr_witness<CurveType>::has_secret() const
 {
     return (bool)secret_;
@@ -43,12 +49,6 @@ const typename pirr_witness<CurveType>::ec_point&
 pirr_witness<CurveType>::commit() const
 {
     return commit_;
-}
-
-template <typename CurveType>
-pirr_witness<CurveType> pirr_witness<CurveType>::clone_public() const
-{
-    return pirr_witness<CurveType>(commit_);
 }
 
 template <typename CurveType>

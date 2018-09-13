@@ -28,6 +28,12 @@ pirr_keypair<CurveType> pirr_keypair<CurveType>::random(
 }
 
 template <typename CurveType>
+pirr_keypair<CurveType> pirr_keypair<CurveType>::clone_public() const
+{
+    return pirr_keypair<CurveType>(publik_, generator_);
+}
+
+template <typename CurveType>
 bool pirr_keypair<CurveType>::has_secret() const
 {
     return (bool)secret_;
@@ -51,12 +57,6 @@ const typename pirr_keypair<CurveType>::ec_point&
 pirr_keypair<CurveType>::generator() const
 {
     return generator_;
-}
-
-template <typename CurveType>
-pirr_keypair<CurveType> pirr_keypair<CurveType>::clone_public() const
-{
-    return pirr_keypair<CurveType>(publik_, generator_);
 }
 
 template <typename CurveType>

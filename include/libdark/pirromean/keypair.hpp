@@ -28,12 +28,12 @@ public:
 
     static pirr_keypair random(const ec_point& generator);
 
+    pirr_keypair clone_public() const;
+
     bool has_secret() const;
     const ec_scalar& secret() const;
     const ec_point& public_() const;
     const ec_point& generator() const;
-
-    pirr_keypair clone_public() const;
 
     std::string pretty(size_t indent=0) const;
 

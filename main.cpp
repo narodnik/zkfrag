@@ -137,7 +137,7 @@ int main(int argc, char** argv)
 
     std::cout << "Signed: " << model.pretty() << std::endl;
 
-    std::cout << "Verify: " << model.verify() << std::endl;
+    std::cout << "Verify: " << model.clone_public().verify() << std::endl;
 
     const auto result = check_rules(root, variables);
     const auto ec = result.first;

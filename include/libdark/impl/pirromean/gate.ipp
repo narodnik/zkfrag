@@ -13,9 +13,11 @@ pirr_gate<CurveType>::pirr_gate(size_t index)
 }
 
 template <typename CurveType>
-pirr_gate<CurveType> pirr_gate<CurveType>::clone_public() const
+typename pirr_gate<CurveType>::ptr pirr_gate<CurveType>::clone_public() const
 {
-    return pirr_gate<CurveType>(index_);
+    auto result = std::make_shared<pirr_gate>(index_);
+    result->challenge_ = challenge_;
+    return result;
 }
 
 template <typename CurveType>
@@ -72,6 +74,8 @@ void pirr_gate<CurveType>::compute_challenge()
             serial.write_4_bytes_little_endian(i);
             serial.write_4_bytes_little_endian(j);
             serial.write_4_bytes_little_endian(index_);
+
+            hasher.update(data);
         }
     }
     challenge_ = hasher.result();

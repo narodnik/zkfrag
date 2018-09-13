@@ -10,6 +10,26 @@ pirr_portal<CurveType>::pirr_portal(const keypair_list& keys)
     witnesses_.reserve(keys_.size());
     responses_.reserve(keys_.size());
 }
+template <typename CurveType>
+pirr_portal<CurveType>::pirr_portal(const keypair_list& keys,
+    const witness_list& witnesses, const response_list& responses)
+  : keys_(keys), witnesses_(witnesses), responses_(responses)
+{
+}
+
+template <typename CurveType>
+typename pirr_portal<CurveType>::ptr
+pirr_portal<CurveType>::clone_public() const
+{
+    keypair_list cloned_keys;
+    for (const auto& key: keys_)
+        cloned_keys.push_back(key.clone_public());
+    witness_list cloned_witnesses;
+    for (const auto& witness: witnesses_)
+        cloned_witnesses.push_back(witness.clone_public());
+    return std::make_shared<pirr_portal>(
+        cloned_keys, cloned_witnesses, responses_);
+}
 
 template <typename CurveType>
 const typename pirr_portal<CurveType>::witness_list&

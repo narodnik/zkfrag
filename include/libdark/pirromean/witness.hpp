@@ -20,11 +20,11 @@ public:
 
     static pirr_witness random(const ec_point& generator);
 
+    pirr_witness clone_public() const;
+
     bool has_secret() const;
     const ec_scalar secret() const;
     const ec_point& commit() const;
-
-    pirr_witness clone_public() const;
 
     std::string pretty(size_t indent=0) const;
 

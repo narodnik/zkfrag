@@ -19,7 +19,7 @@ public:
 
     pirr_gate(size_t index);
 
-    pirr_gate clone_public() const;
+    ptr clone_public() const;
 
     size_t index() const;
 

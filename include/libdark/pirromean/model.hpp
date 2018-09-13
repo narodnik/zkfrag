@@ -19,6 +19,8 @@ public:
     void sign();
     bool verify() const;
 
+    pirr_model clone_public() const;
+
     std::string pretty(size_t indent=0) const;
 
 private:
