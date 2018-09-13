@@ -58,6 +58,10 @@ PKG_PROG_PKG_CONFIG
 AS_IF([test -n "$PKG_CONFIG"], [],
     [AC_MSG_ERROR([pkg-config is required but was not found.])])
 
+# Flex
+AC_PROG_LEX
+# Bison
+AC_PROG_YACC
 
 # Declare environment variables that affect the build.
 #------------------------------------------------------------------------------

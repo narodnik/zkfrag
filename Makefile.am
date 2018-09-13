@@ -4,6 +4,11 @@
 #------------------------------------------------------------------------------
 ACLOCAL_AMFLAGS = -I m4
 
+# Haven't managed to get Bison working with autotools
+#AM_YFLAGS = \
+#    --defines=src/sigma/parser/generated/parser.hpp \
+#    --output=src/sigma/parser/generated/parser.cpp
+
 
 # Distribute, make and install products.
 #==============================================================================
