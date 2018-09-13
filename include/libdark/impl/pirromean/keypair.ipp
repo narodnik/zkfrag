@@ -64,7 +64,7 @@ std::string pirr_keypair<CurveType>::pretty(size_t indent) const
 {
     indent *= 4;
     auto result = std::string(indent, ' ') + "keypair:\n";
-    auto add_line = [indent, &result](auto line)
+    auto add_line = [indent, &result](const std::string& line)
     {
         result += std::string(indent + 4, ' ') + line + "\n";
     };

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <iterator>
 #include <string>
+
 #include <libdark.hpp>
 
 #include <libdark/pirromean/gate.hpp>
@@ -95,7 +96,6 @@ int main(int argc, char** argv)
     DARK_ASSERT(variables["Q"].point());
 
     typedef libdark::pirr_keypair<libdark::curve_secp256k1> pirr_keypair;
-    typedef libdark::pirr_witness<libdark::curve_secp256k1> pirr_witness;
     typedef libdark::pirr_portal<libdark::curve_secp256k1> pirr_portal;
     typedef libdark::pirr_gate<libdark::curve_secp256k1> pirr_gate;
     typedef libdark::pirr_model<libdark::curve_secp256k1> pirr_model;

@@ -58,7 +58,6 @@ template <typename CurveType>
 void pirr_gate<CurveType>::compute_challenge()
 {
     sha256_combine hasher;
-    size_t i = 0;
     for (size_t i = 0; i < inputs_.size(); ++i)
     {
         auto input = inputs_[i];

@@ -84,11 +84,11 @@ endif WITH_TESTS
 #------------------------------------------------------------------------------
 if WITH_TOOLS
 
-#noinst_PROGRAMS = tools/initchain/initchain
-#tools_initchain_initchain_CPPFLAGS = -I${srcdir}/include ${bitcoin_BUILD_CPPFLAGS}
-#tools_initchain_initchain_LDADD = src/libdark.la ${bitcoin_LIBS}
-#tools_initchain_initchain_SOURCES = \
-#    tools/initchain/initchain.cpp
+noinst_PROGRAMS = tools/zkfrag/zkfrag
+tools_zkfrag_zkfrag_CPPFLAGS = -I${srcdir}/include ${bitcoin_BUILD_CPPFLAGS}
+tools_zkfrag_zkfrag_LDADD = src/libdark.la ${bitcoin_LIBS}
+tools_zkfrag_zkfrag_SOURCES = \
+    tools/zkfrag/main.cpp
 
 endif WITH_TOOLS
 
@@ -114,8 +114,8 @@ include_libdark_HEADERS = \
 #==============================================================================
 # make target: tools
 #------------------------------------------------------------------------------
-#target_tools = \
-#    tools/initchain/initchain
-#
-#tools: ${target_tools}
+target_tools = \
+    tools/zkfrag/zkfrag
+
+tools: ${target_tools}
 

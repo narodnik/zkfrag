@@ -1,3 +1,9 @@
+Install:
+
+$ ./configure --prefix /home/user/usr/ --enable-ndebug=no
+$ make install
+$ ./tools/zkfrag/zkfrag
+
 invented my own custom programming language for parsing grammars
 
 a parser for sigma protocol scripts
