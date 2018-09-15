@@ -89,7 +89,7 @@ void pirr_portal<CurveType>::create_random_responses()
 {
     DARK_ASSERT(responses_.empty());
     responses_.reserve(keys_.size());
-    for (const auto& key: keys_)
+    for (size_t i = 0; i < keys_.size(); ++i)
     {
         typename CurveType::ec_secret secret;
         bc::pseudo_random::fill(secret);
