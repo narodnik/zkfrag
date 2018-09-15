@@ -48,7 +48,7 @@ void print_error(const libdark::ast_parser_error& error, std::ifstream& file)
 
 int main(int argc, char** argv)
 {
-    std::string filename = "fragment.zkf";
+    std::string filename = "data/simple.zkf";
     if (argc == 2)
         filename = argv[1];
     std::cout << "Opening: " << filename << std::endl;
