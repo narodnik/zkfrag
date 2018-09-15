@@ -1,0 +1,8 @@
+version 0.1
+private:
+    d, z, x
+
+prove:
+    represent(Q + z H = d G + z H),
+    represent(Y = x H)
+
