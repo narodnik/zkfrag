@@ -79,6 +79,34 @@ include_libdarkdir = ${includedir}/libdark
 include_libdark_HEADERS = \
     include/libdark/error.hpp
 
+include_libdark_mathdir = ${includedir}/libdark/math
+include_libdark_math_HEADERS = \
+    include/libdark/math/sha256_combine.hpp
+
+include_libdark_sigmadir = ${includedir}/libdark/sigma
+include_libdark_sigma_HEADERS = \
+    include/libdark/sigma/check_rules.hpp \
+    include/libdark/sigma/sigma_ast_node.hpp \
+    include/libdark/sigma/sigma_ast_parser.hpp \
+    include/libdark/sigma/variables_map.hpp \
+    include/libdark/sigma/variables_parser.hpp
+
+include_libdark_parserdir = ${includedir}/libdark/parser
+include_libdark_parser_HEADERS = \
+    include/libdark/parser/ast_driver.hpp \
+    include/libdark/parser/ast_node.hpp \
+    include/libdark/parser/ast_parser_base.hpp
+
+include_libdark_impl_parserdir = ${includedir}/libdark/impl/parser
+include_libdark_impl_parser_HEADERS = \
+    include/libdark/impl/parser/ast_driver.ipp \
+    include/libdark/impl/parser/ast_node.ipp \
+    include/libdark/impl/parser/ast_parser_base.ipp
+
+include_libdark_utilitydir = ${includedir}/libdark/utility
+include_libdark_utility_HEADERS = \
+    include/libdark/utility/assert.hpp
+
 #include_dark_databasedir = ${includedir}/dark/database
 #include_dark_database_HEADERS = \
 #    include/bitcoin/database/block_state.hpp \
