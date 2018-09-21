@@ -72,6 +72,9 @@ endif WITH_TOOLS
 
 # files => ${includedir}/dark
 #------------------------------------------------------------------------------
+include_HEADERS = \
+    include/libdark.hpp
+
 include_libdarkdir = ${includedir}/libdark
 include_libdark_HEADERS = \
     include/libdark/error.hpp
