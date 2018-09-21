@@ -47,41 +47,14 @@ src_libdark_la_SOURCES = \
 #------------------------------------------------------------------------------
 if WITH_TESTS
 
-#TESTS = libdark-test_runner.sh
-#
-#check_PROGRAMS = test/libdark-test
-#test_libdark_test_CPPFLAGS = -I${srcdir}/include ${bitcoin_BUILD_CPPFLAGS}
-#test_libdark_test_LDADD = src/libdark.la ${boost_unit_test_framework_LIBS} ${bitcoin_LIBS}
-#test_libdark_test_SOURCES = \
-#    test/block_state.cpp \
-#    test/data_base.cpp \
-#    test/main.cpp \
-#    test/settings.cpp \
-#    test/store.cpp \
-#    test/unspent_outputs.cpp \
-#    test/unspent_transaction.cpp \
-#    test/databases/address_database.cpp \
-#    test/databases/block_database.cpp \
-#    test/databases/transaction_database.cpp \
-#    test/memory/accessor.cpp \
-#    test/memory/file_storage.cpp \
-#    test/primitives/hash_table.cpp \
-#    test/primitives/hash_table_header.cpp \
-#    test/primitives/hash_table_multimap.cpp \
-#    test/primitives/list.cpp \
-#    test/primitives/list_element.cpp \
-#    test/primitives/list_iterator.cpp \
-#    test/primitives/record_manager.cpp \
-#    test/primitives/slab_manager.cpp \
-#    test/result/address_iterator.cpp \
-#    test/result/address_result.cpp \
-#    test/result/block_result.cpp \
-#    test/result/transaction_iterator.cpp \
-#    test/result/transaction_result.cpp \
-#    test/utility/storage.cpp \
-#    test/utility/storage.hpp \
-#    test/utility/utility.cpp \
-#    test/utility/utility.hpp
+TESTS = libdark-test_runner.sh
+
+check_PROGRAMS = test/libdark-test
+test_libdark_test_CPPFLAGS = -I${srcdir}/include ${bitcoin_BUILD_CPPFLAGS}
+test_libdark_test_LDADD = src/libdark.la ${boost_unit_test_framework_LIBS} ${bitcoin_LIBS}
+test_libdark_test_SOURCES = \
+    test/main.cpp \
+    test/math/sha256_combine.cpp
 
 endif WITH_TESTS
 
