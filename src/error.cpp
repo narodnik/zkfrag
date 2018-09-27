@@ -35,6 +35,8 @@ std::string error_category_impl::message(int ev) const
         return "invalid_multiplication";
     case libdark::error::non_scalar_private:
         return "non scalar private value";
+    case libdark::error::invalid_graph:
+        return "invalid graph";
     }
     return "invalid code";
 }

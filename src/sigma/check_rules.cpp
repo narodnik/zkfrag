@@ -19,8 +19,7 @@ bool variable_listed(const libdark::sigma_ast_node::ptr node,
     return true;
 }
 
-bool correct_children(const libdark::sigma_ast_node::ptr node,
-    const libdark::variables_map variables)
+bool correct_children(const libdark::sigma_ast_node::ptr node)
 {
     if (node->type == sigma_ast_type::represent)
     {
@@ -135,7 +134,7 @@ rules_error_result check_rules(const libdark::sigma_ast_node::ptr root,
 
     // Correct hierarchy for nodes in proof
     for (const auto node: flat)
-        if (!correct_children(node, variables))
+        if (!correct_children(node))
             return { error::invalid_children, node };
 
     // Only ever multiply scalar by a point

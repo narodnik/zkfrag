@@ -3,6 +3,8 @@
 
 namespace libdark {
 
+struct invalid_graph_exception {};
+
 template <typename GatePtrType>
 void get_challenge(GatePtrType gate);
 
@@ -47,15 +49,24 @@ pirr_model<CurveType>::end_gate() const
 }
 
 template <typename CurveType>
-void pirr_model<CurveType>::sign()
+std::error_code pirr_model<CurveType>::sign()
 {
     auto end = end_gate();
-    get_challenge(end);
+    try
+    {
+        get_challenge(end);
+    }
+    catch (const invalid_graph_exception& except)
+    {
+        return error::invalid_graph;
+    }
 
     auto start = start_gate();
     start->set_challenge(end->challenge());
 
     make_join(start);
+
+    return std::error_code();
 }
 
 template <typename GatePtrType>
@@ -64,9 +75,9 @@ void get_challenge(GatePtrType gate)
     // What does this mean?
     if (gate->has_challenge())
         return;
-    // TODO: sort this out, "invalid graph"
+    // Use an exception to propagate up the recursive hierarchy
     if (gate->is_start())
-        throw;
+        throw invalid_graph_exception();
     for (auto portal: gate->inputs())
         compute_witness(portal);
     gate->compute_challenge();

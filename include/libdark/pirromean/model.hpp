@@ -1,6 +1,7 @@
 #ifndef LIBDARK_PIRROMEAN_MODEL_HPP
 #define LIBDARK_PIRROMEAN_MODEL_HPP
 
+#include <libdark/error.hpp>
 #include <libdark/pirromean/gate.hpp>
 #include <libdark/pirromean/portal.hpp>
 
@@ -16,7 +17,7 @@ public:
 
     pirr_model(gate_ptrlist gates, portal_ptrlist portals);
 
-    void sign();
+    std::error_code sign();
     bool verify() const;
 
     pirr_model clone_public() const;

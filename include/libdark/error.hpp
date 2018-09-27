@@ -11,7 +11,8 @@ enum class error
     missing_variable,
     invalid_children,
     invalid_multiplication,
-    non_scalar_private
+    non_scalar_private,
+    invalid_graph
 };
 
 std::error_code make_error_code(error ec);
